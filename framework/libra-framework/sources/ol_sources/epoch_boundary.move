@@ -4,7 +4,7 @@ module diem_framework::epoch_boundary {
     use ol_framework::musical_chairs;
     use ol_framework::proof_of_fee;
     use ol_framework::stake;
-    use ol_framework::libra_coin::LibraCoin;
+    use ol_framework::lotus_coin::LotusCoin;
     use ol_framework::rewards;
     use ol_framework::jail;
     use ol_framework::safe;
@@ -12,7 +12,7 @@ module diem_framework::epoch_boundary {
     use ol_framework::donor_voice_txs;
     use ol_framework::fee_maker;
     use ol_framework::infra_escrow;
-    use ol_framework::libra_coin;
+    use ol_framework::lotus_coin;
     use ol_framework::match_index;
     use ol_framework::community_wallet_init;
     use ol_framework::testnet;
@@ -342,7 +342,7 @@ module diem_framework::epoch_boundary {
 
         if (transaction_fee::system_fees_collected() > 0) {
           let all_fees = transaction_fee::root_withdraw_all(root);
-          status.system_fees_collected = libra_coin::value(&all_fees);
+          status.system_fees_collected = lotus_coin::value(&all_fees);
 
           // Nominal fee set by the PoF thermostat
           let (nominal_reward_to_vals, entry_fee, clearing_percent, _ ) = proof_of_fee::get_consensus_reward();
@@ -385,7 +385,7 @@ module diem_framework::epoch_boundary {
   /// NOTE: receives from reconfiguration.move a mutable borrow of a coin to pay reward
   /// NOTE: burn remaining fees from transaction fee account happens in reconfiguration.move (it's not a validator_universe concern)
   // Returns (compliant_vals, reward_deposited)
-  fun process_outgoing_validators(root: &signer, reward_budget: &mut Coin<LibraCoin>, reward_per: u64, compliant_vals: vector<address>): (vector<address>, u64){
+  fun process_outgoing_validators(root: &signer, reward_budget: &mut Coin<LotusCoin>, reward_per: u64, compliant_vals: vector<address>): (vector<address>, u64){
     system_addresses::assert_ol(root);
     let vals = stake::get_current_validators();
     let reward_deposited = 0;
@@ -403,9 +403,9 @@ module diem_framework::epoch_boundary {
         jail::jail(root, *addr);
       } else {
         // vector::push_back(&mut compliant_vals, *addr);
-        if (libra_coin::value(reward_budget) > reward_per) {
-          let user_coin = libra_coin::extract(reward_budget, reward_per);
-          reward_deposited = reward_deposited + libra_coin::value(&user_coin);
+        if (lotus_coin::value(reward_budget) > reward_per) {
+          let user_coin = lotus_coin::extract(reward_budget, reward_per);
+          reward_deposited = reward_deposited + lotus_coin::value(&user_coin);
           rewards::process_single(root, *addr, user_coin, 1);
         }
       };

@@ -3,7 +3,7 @@
 /// tests for external apis, and where a dependency cycle with genesis is created.
 module ol_framework::test_account {
   use std::vector;
-  use ol_framework::libra_coin;
+  use ol_framework::lotus_coin;
   use ol_framework::mock;
   use ol_framework::ol_account;
   use ol_framework::ancestry;
@@ -18,7 +18,7 @@ module ol_framework::test_account {
 
     mock::ol_test_genesis(&root);
 
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
     ol_account::create_account(&root, alice_addr);
     ol_account::deposit_coins(alice_addr, coin::test_mint(100, &mint_cap));
     coin::destroy_mint_cap(mint_cap);
@@ -50,7 +50,7 @@ module ol_framework::test_account {
     let alice_balance = 10000 * 1000000; // with scaling
     let bob_tx_too_much = 1100 * 1000000; // above limit
 
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
     ol_account::create_account(&root, alice_addr);
     ol_account::deposit_coins(alice_addr, coin::test_mint(alice_balance, &mint_cap));
     coin::destroy_mint_cap(mint_cap);

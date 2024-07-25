@@ -1,4 +1,4 @@
-spec ol_framework::libra_coin {
+spec ol_framework::lotus_coin {
     spec module {
         pragma verify = true;
         pragma aborts_if_is_strict;

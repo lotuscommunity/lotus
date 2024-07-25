@@ -54,7 +54,7 @@ module ol_framework::last_goodbye {
   use diem_framework::coin;
   use diem_framework::system_addresses;
   use ol_framework::burn;
-  use ol_framework::libra_coin::LibraCoin;
+  use ol_framework::lotus_coin::LotusCoin;
   use ol_framework::pledge_accounts;
   use ol_framework::receipts;
   use ol_framework::jail;
@@ -121,9 +121,9 @@ module ol_framework::last_goodbye {
     let _coin_val = pledge_accounts::hard_fork_sanitize(vm, user);
 
         // do all the necessary coin accounting prior to removing the account.
-    let total_bal = coin::balance<LibraCoin>(user_addr);
+    let total_bal = coin::balance<LotusCoin>(user_addr);
 
-    let all_coins_opt = coin::vm_withdraw<LibraCoin>(vm, user_addr,
+    let all_coins_opt = coin::vm_withdraw<LotusCoin>(vm, user_addr,
     total_bal);
 
     // It ain't no use to sit and wonder why, babe
@@ -297,7 +297,7 @@ module ol_framework::last_goodbye {
   fun k_bai_global_balance(vm: &signer, framework: &signer, alice: &signer, bob: &signer) {
     use diem_framework::account;
     use ol_framework::mock;
-    use ol_framework::libra_coin;
+    use ol_framework::lotus_coin;
 
     // Initialize the framework and set initial conditions
     mock::genesis_n_vals(framework, 1);
@@ -305,7 +305,7 @@ module ol_framework::last_goodbye {
 
 
     // Check the initial global supply
-    let existing_supply_pre = libra_coin::supply();
+    let existing_supply_pre = lotus_coin::supply();
     assert!(existing_supply_pre > 0, 735701); // Ensure there's an initial supply
 
     let b_addr = signer::address_of(bob);
@@ -329,7 +329,7 @@ module ol_framework::last_goodbye {
     assert!(total_bal_post == 0, 735706); // Balance should be zero
 
     // Check the global supply after the operation
-    let existing_supply_post = libra_coin::supply();
+    let existing_supply_post = lotus_coin::supply();
     assert!(existing_supply_post < existing_supply_pre, 735707); // Global supply should decrease
   }
 
@@ -337,7 +337,7 @@ module ol_framework::last_goodbye {
   fun k_bai_effect_on_global_burns(vm: &signer, framework: &signer, alice: &signer, bob: &signer) {
     use ol_framework::mock;
     use ol_framework::burn;
-    use ol_framework::libra_coin;
+    use ol_framework::lotus_coin;
     use std::signer;
 
     // Initialize the testing environment and mint coins to Bob's account.
@@ -353,13 +353,13 @@ module ol_framework::last_goodbye {
     let bob_addr = signer::address_of(bob);
 
     // Capture the global supply and burn counters before operation.
-    let global_supply_pre = libra_coin::supply();
+    let global_supply_pre = lotus_coin::supply();
     let (burned_pre, recycled_pre) = burn::get_lifetime_tracker();
 
     dont_think_twice_its_alright(vm, bob);
 
     // Capture the global supply and burn counters after operation.
-    let global_supply_post = libra_coin::supply();
+    let global_supply_post = lotus_coin::supply();
     let (burned_post, recycled_post) = burn::get_lifetime_tracker();
 
 

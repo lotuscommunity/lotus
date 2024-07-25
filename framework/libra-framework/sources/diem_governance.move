@@ -17,13 +17,13 @@ module diem_framework::diem_governance {
     use diem_framework::timestamp;
     use diem_framework::voting;
 
-    use ol_framework::libra_coin;
+    use ol_framework::lotus_coin;
     use ol_framework::epoch_boundary;
     use ol_framework::musical_chairs;
     use ol_framework::testnet;
 
     #[test_only]
-    use ol_framework::libra_coin::LibraCoin;
+    use ol_framework::lotus_coin::LotusCoin;
     #[test_only]
     use diem_framework::coin;
 
@@ -356,7 +356,7 @@ module diem_framework::diem_governance {
             error::invalid_argument(EALREADY_VOTED));
         table::add(&mut voting_records.votes, record_key, true);
 
-        let voting_power = libra_coin::balance(voter_address);
+        let voting_power = lotus_coin::balance(voter_address);
         voting::vote<GovernanceProposal>(
             &governance_proposal::create_empty_proposal(),
             @diem_framework,
@@ -702,17 +702,17 @@ module diem_framework::diem_governance {
             account::create_test_signer_cap(@diem_framework),
         );
 
-        let (burn_cap, mint_cap) = libra_coin::initialize_for_test(diem_framework);
-        coin::register<LibraCoin>(proposer);
-        coin::register<LibraCoin>(yes_voter);
-        coin::register<LibraCoin>(no_voter);
+        let (burn_cap, mint_cap) = lotus_coin::initialize_for_test(diem_framework);
+        coin::register<LotusCoin>(proposer);
+        coin::register<LotusCoin>(yes_voter);
+        coin::register<LotusCoin>(no_voter);
 
-        libra_coin::test_mint_to(diem_framework, signer::address_of(proposer), 50);
-        libra_coin::test_mint_to(diem_framework, signer::address_of(yes_voter), 10);
-        libra_coin::test_mint_to(diem_framework, signer::address_of(no_voter), 5);
+        lotus_coin::test_mint_to(diem_framework, signer::address_of(proposer), 50);
+        lotus_coin::test_mint_to(diem_framework, signer::address_of(yes_voter), 10);
+        lotus_coin::test_mint_to(diem_framework, signer::address_of(no_voter), 5);
 
-        coin::destroy_mint_cap<LibraCoin>(mint_cap);
-        coin::destroy_burn_cap<LibraCoin>(burn_cap);
+        coin::destroy_mint_cap<LotusCoin>(mint_cap);
+        coin::destroy_burn_cap<LotusCoin>(burn_cap);
     }
 
     #[verify_only]

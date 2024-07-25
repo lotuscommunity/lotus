@@ -7,7 +7,7 @@ module ol_framework::test_slow_wallet {
   use ol_framework::slow_wallet;
   use ol_framework::mock;
   use ol_framework::ol_account;
-  use ol_framework::libra_coin;
+  use ol_framework::lotus_coin;
   use ol_framework::epoch_boundary;
   use diem_framework::reconfiguration;
   use diem_framework::coin;
@@ -44,7 +44,7 @@ module ol_framework::test_slow_wallet {
     let a_addr = signer::address_of(alice_sig);
     let b_addr = signer::address_of(bob_sig);
     mock::ol_test_genesis(&root);
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
     slow_wallet::initialize(&root);
     // create alice account
     ol_account::create_account(&root, a_addr);
@@ -133,7 +133,7 @@ module ol_framework::test_slow_wallet {
   #[test(root = @ol_framework, alice = @0x123, bob = @0x456)]
   fun test_deposit_unlocked_happy(root: signer, alice: signer) {
     mock::ol_test_genesis(&root);
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
 
     slow_wallet::initialize(&root);
 
@@ -157,7 +157,7 @@ module ol_framework::test_slow_wallet {
   #[test(root = @ol_framework, alice = @0x123, bob = @0x456)]
   fun test_transfer_unlocked_happy(root: signer, alice: signer) {
     mock::ol_test_genesis(&root);
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
 
     slow_wallet::initialize(&root);
 
@@ -184,7 +184,7 @@ module ol_framework::test_slow_wallet {
     let transfer_amount = 10;
     ol_account::transfer(&alice, @0x456, transfer_amount);
     // slow transfer
-    let b_balance = libra_coin::balance(@0x456);
+    let b_balance = lotus_coin::balance(@0x456);
     assert!(b_balance == transfer_amount, 735704);
     // print(&alice_init_balance);
     // print(&transfer_amount);
@@ -205,7 +205,7 @@ module ol_framework::test_slow_wallet {
   #[expected_failure(abort_code = 196614, location = 0x1::ol_account)]
   fun test_transfer_sad(root: signer, alice: signer) {
     mock::ol_test_genesis(&root);
-    let mint_cap = libra_coin::extract_mint_cap(&root);
+    let mint_cap = lotus_coin::extract_mint_cap(&root);
     slow_wallet::initialize(&root);
     ol_account::create_account(&root, @0x123);
     slow_wallet::user_set_slow(&alice);
@@ -221,7 +221,7 @@ module ol_framework::test_slow_wallet {
     // alice will transfer and create bob's account
     ol_account::transfer(&alice, @0x456, 99);
 
-    let b_balance = libra_coin::balance(@0x456);
+    let b_balance = lotus_coin::balance(@0x456);
     assert!(b_balance == 99, 735702);
     assert!(slow_wallet::unlocked_amount(@0x123) == 01, 735703);
 

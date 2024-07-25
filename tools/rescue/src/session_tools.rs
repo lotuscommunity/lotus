@@ -225,7 +225,7 @@ pub fn session_add_validators(
         dbg!("mint to account");
         libra_execute_session_function(
             session,
-            "0x1::libra_coin::mint_to_impl",
+            "0x1::lotus_coin::mint_to_impl",
             vec![&MoveValue::Signer(AccountAddress::ONE), &signer, &amount],
         )?;
         dbg!("registering validator");

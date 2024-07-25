@@ -1,46 +1,23 @@
+use crate::move_resource::gas_coin::{cast_coin_to_decimal, GAS_COIN_TYPE};
+use diem_types::event::EventHandle;
 use move_core_types::{
     ident_str,
     identifier::IdentStr,
-    language_storage::{StructTag, TypeTag},
+    language_storage::TypeTag,
     move_resource::{MoveResource, MoveStructType},
 };
 use serde::{Deserialize, Serialize};
 
-use diem_types::{account_address::AccountAddress, event::EventHandle};
-use once_cell::sync::Lazy;
-
-use crate::ONCHAIN_DECIMAL_PRECISION;
-
-pub static GAS_COIN_TYPE: Lazy<TypeTag> = Lazy::new(|| {
-    TypeTag::Struct(Box::new(StructTag {
-        address: AccountAddress::ONE,
-        module: ident_str!("lotus_coin").to_owned(),
-        name: ident_str!("LotusCoin").to_owned(),
-        type_params: vec![],
-    }))
-});
-
-/// utility to scale a number to the coin's decimal precision.
-pub fn cast_coin_to_decimal(onchain_coin_value: u64) -> f64 {
-    onchain_coin_value as f64 / 10f64.powf(ONCHAIN_DECIMAL_PRECISION as f64)
-}
-
-/// utility to cast a decimal to the onchain coin representation
-pub fn cast_decimal_to_coin(decimal: f64) -> u64 {
-    let int = decimal * 10f64.powf(ONCHAIN_DECIMAL_PRECISION as f64);
-    int as u64
-}
-
 /// The balance resource held under an account.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 // #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub struct GasCoinStoreResource {
+pub struct LotusCoinStoreResource {
     coin: u64,
     deposit_events: EventHandle,
     withdraw_events: EventHandle,
 }
 
-impl GasCoinStoreResource {
+impl LotusCoinStoreResource {
     pub fn new(coin: u64, deposit_events: EventHandle, withdraw_events: EventHandle) -> Self {
         Self {
             coin,
@@ -62,7 +39,7 @@ impl GasCoinStoreResource {
     }
 }
 
-impl MoveStructType for GasCoinStoreResource {
+impl MoveStructType for LotusCoinStoreResource {
     const MODULE_NAME: &'static IdentStr = ident_str!("coin");
     const STRUCT_NAME: &'static IdentStr = ident_str!("CoinStore");
 
@@ -71,16 +48,16 @@ impl MoveStructType for GasCoinStoreResource {
     }
 }
 
-impl MoveResource for GasCoinStoreResource {}
+impl MoveResource for LotusCoinStoreResource {}
 
 // TODO: This might break reading from API maybe it must be diem_api_types::U64;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct GasCoin {
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LotusCoin {
     pub value: u64,
 }
 
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SlowWalletBalance {
     pub unlocked: u64,
     pub total: u64,
@@ -114,7 +91,7 @@ impl SlowWalletBalance {
 }
 
 /// This is the same shape as Slow Wallet balance, except that it is scaled.
-/// The slow wallet struct contains the coin value as it exists in the database which is without decimals. The decimal precision for GasCoin is 6. So we need to scale it for human consumption.
+/// The slow wallet struct contains the coin value as it exists in the database which is without decimals. The decimal precision for LotusCoin is 6. So we need to scale it for human consumption.
 #[derive(Debug, Serialize, Deserialize)]
 
 pub struct LibraBalanceDisplay {

@@ -390,7 +390,7 @@ pub fn genesis_migrate_cumu_deposits(
 }
 
 // before any accounts are created we need to have a FinalMint in place
-// It should also happen immediately after LibraCoin gets initialized
+// It should also happen immediately after LotusCoin gets initialized
 pub fn set_final_supply(session: &mut SessionExt) {
     let serialized_values = serialize_values(&vec![
         MoveValue::Signer(CORE_CODE_ADDRESS),
@@ -399,7 +399,7 @@ pub fn set_final_supply(session: &mut SessionExt) {
 
     exec_function(
         session,
-        "libra_coin",
+        "lotus_coin",
         "genesis_set_final_supply",
         vec![],
         serialized_values,

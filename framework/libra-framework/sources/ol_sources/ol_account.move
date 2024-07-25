@@ -13,7 +13,7 @@ module ol_framework::ol_account {
 
 
     use ol_framework::ancestry;
-    use ol_framework::libra_coin::{Self, LibraCoin};
+    use ol_framework::lotus_coin::{Self, LotusCoin};
     use ol_framework::slow_wallet;
     use ol_framework::receipts;
     use ol_framework::cumulative_deposits;
@@ -112,7 +112,7 @@ module ol_framework::ol_account {
     /// A wrapper to create a NEW account and register it to receive GAS.
     public fun test_ol_create_resource_account(user: &signer, seed: vector<u8>): (signer, account::SignerCapability) {
       let (resource_account_sig, cap) = account::create_resource_account(user, seed);
-      coin::register<LibraCoin>(&resource_account_sig);
+      coin::register<LotusCoin>(&resource_account_sig);
 
       receipts::user_init(&resource_account_sig);
       maybe_init_burn_tracker(&resource_account_sig);
@@ -130,7 +130,7 @@ module ol_framework::ol_account {
     // GAS.
     // fun _ol_create_resource_account(user: &signer, seed: vector<u8>): (signer, account::SignerCapability) {
     //   let (resource_account_sig, cap) = account::create_resource_account(user, seed);
-    //   coin::register<LibraCoin>(&resource_account_sig);
+    //   coin::register<LotusCoin>(&resource_account_sig);
 
     //   init_from_sig_impl(user, &resource_account_sig);
     //   (resource_account_sig, cap);
@@ -146,7 +146,7 @@ module ol_framework::ol_account {
 
     /// all account initialization happens here after a signer is created
     fun init_from_sig_impl(sender: &signer, new_account_sig: &signer) {
-        coin::register<LibraCoin>(new_account_sig);
+        coin::register<LotusCoin>(new_account_sig);
         receipts::user_init(new_account_sig);
         maybe_init_burn_tracker(new_account_sig);
         ancestry::adopt_this_child(sender, new_account_sig);
@@ -191,7 +191,7 @@ module ol_framework::ol_account {
         //   lookup_addr == signer::address_of(&new_signer),
         //   error::invalid_state(ECANT_MATCH_ADDRESS_IN_LOOKUP)
         // );
-        coin::register<LibraCoin>(&new_signer);
+        coin::register<LotusCoin>(&new_signer);
         maybe_init_burn_tracker(&new_signer);
         new_signer
     }
@@ -260,7 +260,7 @@ module ol_framework::ol_account {
 
     /// Withdraw a coin while tracking the unlocked withdraw
     public(friend) fun withdraw_with_capability(cap: &WithdrawCapability, amount: u64):
-    Coin<LibraCoin> acquires BurnTracker {
+    Coin<LotusCoin> acquires BurnTracker {
       let payer = account::get_withdraw_cap_address(cap);
       let limit = slow_wallet::unlocked_amount(payer);
       assert!(amount < limit, error::invalid_state(EINSUFFICIENT_BALANCE));
@@ -278,7 +278,7 @@ module ol_framework::ol_account {
     // COMMIT NOTE: this function is acceptable to be used in TXS scripts
     // so it will remain public
     /// Withdraw funds while respecting the transfer limits
-    public fun withdraw(sender: &signer, amount: u64): Coin<LibraCoin> acquires
+    public fun withdraw(sender: &signer, amount: u64): Coin<LotusCoin> acquires
     BurnTracker {
         spec {
             assume !system_addresses::signer_is_ol_root(sender);
@@ -290,7 +290,7 @@ module ol_framework::ol_account {
 
         let limit = slow_wallet::unlocked_amount(addr);
         assert!(amount <= limit, error::invalid_state(EINSUFFICIENT_BALANCE));
-        let coin = coin::withdraw<LibraCoin>(sender, amount);
+        let coin = coin::withdraw<LotusCoin>(sender, amount);
         slow_wallet::maybe_track_unlocked_withdraw(addr, amount);
 
         // the outgoing coins should trigger an update on this account
@@ -324,7 +324,7 @@ module ol_framework::ol_account {
 
         // TODO: Check if Resource Accounts can register here, since they
         // may be created without any coin registration.
-        assert!(coin::is_account_registered<LibraCoin>(recipient), error::invalid_argument(EACCOUNT_NOT_REGISTERED_FOR_GAS));
+        assert!(coin::is_account_registered<LotusCoin>(recipient), error::invalid_argument(EACCOUNT_NOT_REGISTERED_FOR_GAS));
 
         // must track the slow wallet on both sides of the transfer
         // slow_wallet::maybe_track_slow_transfer(payer, recipient, amount);
@@ -347,12 +347,12 @@ module ol_framework::ol_account {
       system_addresses::assert_ol(vm);
       let amount_transferred = 0;
       // should not halt
-      if (!coin::is_account_registered<LibraCoin>(from)) return (0, false);
-      if (!coin::is_account_registered<LibraCoin>(to)) return (0, false);
+      if (!coin::is_account_registered<LotusCoin>(from)) return (0, false);
+      if (!coin::is_account_registered<LotusCoin>(to)) return (0, false);
 
-      if(amount > libra_coin::balance(from)) return (0, false);
+      if(amount > lotus_coin::balance(from)) return (0, false);
 
-      let coin_option = coin::vm_withdraw<LibraCoin>(vm, from, amount);
+      let coin_option = coin::vm_withdraw<LotusCoin>(vm, from, amount);
 
       if (option::is_some(&coin_option)) {
         let c = option::extract(&mut coin_option);
@@ -377,37 +377,37 @@ module ol_framework::ol_account {
 
     #[test_only]
     public fun test_vm_withdraw(vm: &signer, from: address, amount: u64):
-    Option<Coin<LibraCoin>> acquires BurnTracker {
+    Option<Coin<LotusCoin>> acquires BurnTracker {
       system_addresses::assert_ol(vm);
       // should not halt
-      if (!coin::is_account_registered<LibraCoin>(from)) return option::none();
-      if(amount > libra_coin::balance(from)) return option::none();
+      if (!coin::is_account_registered<LotusCoin>(from)) return option::none();
+      if(amount > lotus_coin::balance(from)) return option::none();
 
       maybe_update_burn_tracker_impl(from);
-      coin::vm_withdraw<LibraCoin>(vm, from, amount)
+      coin::vm_withdraw<LotusCoin>(vm, from, amount)
 
     }
     /// vm can transfer between account to settle.
     /// THIS FUNCTION CAN BYPASS SLOW WALLET WITHDRAW RESTRICTIONS
     /// used to withdraw and track the withdrawal
     public(friend) fun vm_withdraw_unlimited(vm: &signer, from: address, amount:
-    u64): Option<Coin<LibraCoin>> acquires
+    u64): Option<Coin<LotusCoin>> acquires
     BurnTracker {
       system_addresses::assert_ol(vm);
       // prevent vm trying to reach accounts that may not exist
       if (!account::exists_at(from)) return option::none();
       // should not halt
-      if(amount > libra_coin::balance(from)) return option::none();
+      if(amount > lotus_coin::balance(from)) return option::none();
 
       // since the VM can withdraw more than what is unlocked
       // it needs to adjust the unlocked amount, which may end up zero
       // if it goes over the limit
-      let c_opt = coin::vm_withdraw<LibraCoin>(vm, from, amount);
+      let c_opt = coin::vm_withdraw<LotusCoin>(vm, from, amount);
 
       // we're not always sure what's in the option
       if (option::is_some(&c_opt)) {
         let coin = option::borrow(&c_opt);
-        let value = coin::value<LibraCoin>(coin);
+        let value = coin::value<LotusCoin>(coin);
         if (value > 0) {
           maybe_update_burn_tracker_impl(from);
           slow_wallet::maybe_track_unlocked_withdraw(from, value);
@@ -421,7 +421,7 @@ module ol_framework::ol_account {
     //////// 0L ////////
 
     #[view]
-    /// return the LibraCoin balance as tuple (unlocked, total)
+    /// return the LotusCoin balance as tuple (unlocked, total)
     // TODO v7: consolidate balance checks here, not in account, slow_wallet, or coin
     public fun balance(addr: address): (u64, u64) {
       slow_wallet::unlocked_and_total(addr)
@@ -432,8 +432,8 @@ module ol_framework::ol_account {
     // Note: there is a similar function in coin.move to get the indexed
     // value of a single coin.
     public fun real_balance(addr: address): (u64, u64) {
-      let final = libra_coin::get_final_supply();
-      let current = libra_coin::supply();
+      let final = lotus_coin::get_final_supply();
+      let current = lotus_coin::supply();
       let (unlocked, total) = slow_wallet::unlocked_and_total(addr);
 
       let unlocked_indexed = math64::mul_div(unlocked, final, current);
@@ -457,7 +457,7 @@ module ol_framework::ol_account {
         let (_, unscaled_value) = balance(owner);
         if (unscaled_value == 0) return (0,0);
 
-        let decimal_places = coin::decimals<LibraCoin>();
+        let decimal_places = coin::decimals<LotusCoin>();
         let scaling = math64::pow(10, (decimal_places as u64));
         let value = fixed_point32::create_from_rational(unscaled_value, scaling);
         // multiply will TRUNCATE.
@@ -472,7 +472,7 @@ module ol_framework::ol_account {
     /// helper to safely convert from coin units (human readable) to the value scaled to
     /// the on chain decimal precision
     public fun scale_from_human(human: u64): u64 {
-        let decimal_places = coin::decimals<LibraCoin>();
+        let decimal_places = coin::decimals<LotusCoin>();
         let scaling = math64::pow(10, (decimal_places as u64));
         return human * scaling
     }
@@ -485,9 +485,9 @@ module ol_framework::ol_account {
       if (exists<BurnTracker>(addr)) return;
 
       let prev_supply = if (chain_status::is_genesis()) {
-        libra_coin::get_final_supply()
+        lotus_coin::get_final_supply()
       } else {
-        libra_coin::supply()
+        lotus_coin::supply()
       };
 
       let (_, current_user_balance) = balance(addr);
@@ -508,7 +508,7 @@ module ol_framework::ol_account {
     // 1. how much burn happened in between
     // this must be true but we
     // don't abort since the VM may be calling this
-    let current_supply = libra_coin::supply();
+    let current_supply = lotus_coin::supply();
     // has there been a change in
     // supply since we last used this account
     if (state.prev_supply > current_supply) {
@@ -564,25 +564,25 @@ module ol_framework::ol_account {
     // TX scripts
     /// A coin which is split or extracted can be sent to an account without a sender signing.
     /// TODO: cumulative tracker will not work here.
-    public fun deposit_coins(to: address, coins: Coin<LibraCoin>) acquires
+    public fun deposit_coins(to: address, coins: Coin<LotusCoin>) acquires
     BurnTracker {
         assert!(!account::is_tombstone(to), error::already_exists(ETOMBSTONE));
-        assert!(coin::is_account_registered<LibraCoin>(to), error::invalid_state(EACCOUNT_NOT_REGISTERED_FOR_GAS));
+        assert!(coin::is_account_registered<LotusCoin>(to), error::invalid_state(EACCOUNT_NOT_REGISTERED_FOR_GAS));
         slow_wallet::maybe_track_unlocked_deposit(to, coin::value(&coins));
-        coin::deposit<LibraCoin>(to, coins);
+        coin::deposit<LotusCoin>(to, coins);
         // the incoming coins should trigger an update in tracker
         maybe_update_burn_tracker_impl(to);
     }
 
     /// for validator rewards and community wallet transfers,
     /// the SlowWallet.unlocked DOES NOT get updated.
-    public(friend) fun vm_deposit_coins_locked(vm: &signer, to: address, coins: Coin<LibraCoin>) acquires
+    public(friend) fun vm_deposit_coins_locked(vm: &signer, to: address, coins: Coin<LotusCoin>) acquires
     BurnTracker {
         system_addresses::assert_ol(vm);
         assert!(!account::is_tombstone(to), error::already_exists(ETOMBSTONE));
         // prevent vm trying to reach accounts that may not exist
-        assert!(coin::is_account_registered<LibraCoin>(to), error::invalid_state(EACCOUNT_NOT_REGISTERED_FOR_GAS));
-        coin::deposit<LibraCoin>(to, coins);
+        assert!(coin::is_account_registered<LotusCoin>(to), error::invalid_state(EACCOUNT_NOT_REGISTERED_FOR_GAS));
+        coin::deposit<LotusCoin>(to, coins);
         // the incoming coins should trigger an update in tracker
         maybe_update_burn_tracker_impl(to);
     }
@@ -590,10 +590,10 @@ module ol_framework::ol_account {
     // COMMIT NOTE: this function will remain public since it is acceptable to
     // use in tx scripts
     /// pass through function to guard the use of Coin
-    public fun merge_coins(dst_coin: &mut Coin<LibraCoin>, source_coin: Coin<LibraCoin>) {
+    public fun merge_coins(dst_coin: &mut Coin<LotusCoin>, source_coin: Coin<LotusCoin>) {
         // TODO: check it this is true: no tracking on merged coins since they are always withdrawn, and are a hot potato that might deposit later.
         // slow_wallet::maybe_track_unlocked_deposit(to, coin::value(&coins));
-        coin::merge<LibraCoin>(dst_coin, source_coin);
+        coin::merge<LotusCoin>(dst_coin, source_coin);
     }
 
 
@@ -603,7 +603,7 @@ module ol_framework::ol_account {
 
     public fun assert_account_is_registered_for_gas(addr: address) {
         assert_account_exists(addr);
-        assert!(coin::is_account_registered<LibraCoin>(addr), error::not_found(EACCOUNT_NOT_REGISTERED_FOR_GAS));
+        assert!(coin::is_account_registered<LotusCoin>(addr), error::not_found(EACCOUNT_NOT_REGISTERED_FOR_GAS));
     }
 
     /// Set whether `account` can receive direct transfers of coins that they have not explicitly registered to receive.
@@ -670,18 +670,18 @@ module ol_framework::ol_account {
         let carol = from_bcs::to_address(x"00000000000000000000000000000000000000000000000000000000000ca501");
 
         let (burn_cap, mint_cap) =
-        ol_framework::libra_coin::initialize_for_test(core);
-        libra_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
+        ol_framework::lotus_coin::initialize_for_test(core);
+        lotus_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
         create_account(root, signer::address_of(alice));
         create_account(root, bob);
         create_account(root, carol);
         coin::deposit(signer::address_of(alice), coin::mint(10000, &mint_cap));
         transfer(alice, bob, 500);
-        assert!(libra_coin::balance(bob) == 500, 0);
+        assert!(lotus_coin::balance(bob) == 500, 0);
         transfer(alice, carol, 500);
-        assert!(libra_coin::balance(carol) == 500, 1);
+        assert!(lotus_coin::balance(carol) == 500, 1);
         transfer(alice, carol, 1500);
-        assert!(libra_coin::balance(carol) == 2000, 2);
+        assert!(lotus_coin::balance(carol) == 2000, 2);
 
         coin::destroy_burn_cap(burn_cap);
         coin::destroy_mint_cap(mint_cap);
@@ -691,8 +691,8 @@ module ol_framework::ol_account {
     public fun test_transfer_to_resource_account_ol(root: &signer, alice: &signer,
     core: &signer) acquires BurnTracker{
         let (burn_cap, mint_cap) =
-        ol_framework::libra_coin::initialize_for_test(core);
-        libra_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
+        ol_framework::lotus_coin::initialize_for_test(core);
+        lotus_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
 
         let (resource_account, _) = test_ol_create_resource_account(alice, vector[]);
         let resource_acc_addr = signer::address_of(&resource_account);
@@ -701,7 +701,7 @@ module ol_framework::ol_account {
         create_account(root, signer::address_of(alice));
         coin::deposit(signer::address_of(alice), coin::mint(10000, &mint_cap));
         transfer(alice, resource_acc_addr, 500);
-        assert!(libra_coin::balance(resource_acc_addr) == 500, 1);
+        assert!(lotus_coin::balance(resource_acc_addr) == 500, 1);
 
         coin::destroy_burn_cap(burn_cap);
         coin::destroy_mint_cap(mint_cap);
@@ -712,8 +712,8 @@ module ol_framework::ol_account {
     recipient_1: &signer, recipient_2: &signer) acquires BurnTracker{
         account::maybe_initialize_duplicate_originating(root);
         let (burn_cap, mint_cap) =
-        diem_framework::libra_coin::initialize_for_test(core);
-        libra_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
+        diem_framework::lotus_coin::initialize_for_test(core);
+        lotus_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
 
         create_account(root, signer::address_of(from));
         let recipient_1_addr = signer::address_of(recipient_1);
@@ -726,8 +726,8 @@ module ol_framework::ol_account {
             vector[recipient_1_addr, recipient_2_addr],
             vector[100, 500],
         );
-        assert!(libra_coin::balance(recipient_1_addr) == 100, 0);
-        assert!(libra_coin::balance(recipient_2_addr) == 500, 1);
+        assert!(lotus_coin::balance(recipient_1_addr) == 100, 0);
+        assert!(lotus_coin::balance(recipient_2_addr) == 500, 1);
         coin::destroy_burn_cap(burn_cap);
         coin::destroy_mint_cap(mint_cap);
     }
@@ -737,10 +737,10 @@ module ol_framework::ol_account {
     &signer) acquires DirectTransferConfig {
         account::maybe_initialize_duplicate_originating(root);
         let addr = signer::address_of(user);
-        let (b, m) = libra_coin::initialize_for_test(root);
+        let (b, m) = lotus_coin::initialize_for_test(root);
         coin::destroy_burn_cap(b);
         coin::destroy_mint_cap(m);
-        libra_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
+        lotus_coin::test_set_final_supply(root, 1000); // dummy to prevent fail
 
         create_account(root, addr);
         set_allow_direct_coin_transfers(user, true);

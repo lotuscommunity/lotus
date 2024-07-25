@@ -54,7 +54,7 @@ pub async fn get_events(
     let res = client
         .get_account_events(
             account,
-            "0x1::coin::CoinStore<0x1::libra_coin::LibraCoin>",
+            "0x1::coin::CoinStore<0x1::lotus_coin::LotusCoin>",
             direction,
             seq_start,
             None,

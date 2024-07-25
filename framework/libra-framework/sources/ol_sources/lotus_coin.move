@@ -6,8 +6,7 @@
 // Original Commit:
 // https://github.com/diem/diem/commit/782b31cb08eeb717ea2b6f3edbf616b13fd4cae8
 
-
-module ol_framework::libra_coin {
+module ol_framework::lotus_coin {
     use std::string;
     use std::error;
     use std::signer;
@@ -35,14 +34,14 @@ module ol_framework::libra_coin {
     /// Supply somehow above MAX_U64
     const ESUPPLY_OVERFLOW: u64 = 4;
 
-    struct LibraCoin has key { /* new games for society */}
+    struct LotusCoin has key { /* new games for society */}
 
     struct FinalMint has key {
         value: u64,
     }
 
     struct MintCapStore has key {
-        mint_cap: MintCapability<LibraCoin>,
+        mint_cap: MintCapability<LotusCoin>,
     }
 
     /// Delegation token created by delegator and can be claimed by the delegatee as MintCapability.
@@ -59,10 +58,10 @@ module ol_framework::libra_coin {
     public(friend) fun initialize(diem_framework: &signer) acquires FinalMint {
         system_addresses::assert_diem_framework(diem_framework);
 
-        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LibraCoin>(
+        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LotusCoin>(
             diem_framework,
-            string::utf8(b"LibraCoin"),
-            string::utf8(b"LIBRA"),
+            string::utf8(b"LotusCoin"),
+            string::utf8(b"LOTUS"),
             globals::get_coin_decimal_places(), /* decimals  MATCHES LEGACY 0L */
             true, /* monitor_supply */
         );
@@ -81,13 +80,13 @@ module ol_framework::libra_coin {
     /// FOR TESTS ONLY
     /// Can only called during genesis to initialize the Diem coin.
     public(friend) fun initialize_for_core(diem_framework: &signer):
-    (BurnCapability<LibraCoin>, MintCapability<LibraCoin>) acquires FinalMint {
+    (BurnCapability<LotusCoin>, MintCapability<LotusCoin>) acquires FinalMint {
         system_addresses::assert_diem_framework(diem_framework);
 
-        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LibraCoin>(
+        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LotusCoin>(
             diem_framework,
-            string::utf8(b"LibraCoin"),
-            string::utf8(b"LIBRA"),
+            string::utf8(b"LotusCoin"),
+            string::utf8(b"LOTUS"),
             globals::get_coin_decimal_places(), /* decimals  MATCHES LEGACY 0L */
             true, /* monitor_supply */
         );
@@ -155,35 +154,35 @@ module ol_framework::libra_coin {
 
     // NOTE: these public functions are duplicated here to isolate the coin.move
     // from generic implementations
-    /// libra coin value
-    public fun value(coin: &Coin<LibraCoin>): u64 {
-      coin::value<LibraCoin>(coin)
+    /// lotus coin value
+    public fun value(coin: &Coin<LotusCoin>): u64 {
+      coin::value<LotusCoin>(coin)
     }
-    /// simple libra coin balance at this address,
+    /// simple lotus coin balance at this address,
     /// without considering locks or index
     public fun balance(addr: address): u64 {
-      coin::balance<LibraCoin>(addr)
+      coin::balance<LotusCoin>(addr)
     }
 
     /// extract coin by splitting a coin
-    public fun extract(coin: &mut Coin<LibraCoin>, amount: u64): Coin<LibraCoin> {
-      coin::extract<LibraCoin>(coin, amount)
+    public fun extract(coin: &mut Coin<LotusCoin>, amount: u64): Coin<LotusCoin> {
+      coin::extract<LotusCoin>(coin, amount)
     }
     /// extract all remaining value from a coin
-    public fun extract_all(coin: &mut Coin<LibraCoin>): Coin<LibraCoin> {
-      coin::extract_all<LibraCoin>(coin)
+    public fun extract_all(coin: &mut Coin<LotusCoin>): Coin<LotusCoin> {
+      coin::extract_all<LotusCoin>(coin)
     }
 
-    /// merge two libra coins back together
-    public fun merge(dst_coin: &mut Coin<LibraCoin>, source_coin: Coin<LibraCoin>) {
-      coin::merge<LibraCoin>(dst_coin, source_coin)
+    /// merge two lotus coins back together
+    public fun merge(dst_coin: &mut Coin<LotusCoin>, source_coin: Coin<LotusCoin>) {
+      coin::merge<LotusCoin>(dst_coin, source_coin)
     }
 
 
-    /// try to register an account to use libra coin if noy yet enabled
+    /// try to register an account to use lotus coin if noy yet enabled
     public fun maybe_register(sig: &signer) {
-    if (!coin::is_account_registered<LibraCoin>(signer::address_of(sig))) {
-        coin::register<LibraCoin>(sig);
+    if (!coin::is_account_registered<LotusCoin>(signer::address_of(sig))) {
+        coin::register<LotusCoin>(sig);
       };
     }
     #[view]
@@ -191,7 +190,7 @@ module ol_framework::libra_coin {
     // NOTE: there is casting between u128 and u64, but 0L has final supply below the u64.
     public fun supply(): u64 {
 
-      let supply_opt = coin::supply<LibraCoin>();
+      let supply_opt = coin::supply<LotusCoin>();
       if (option::is_some(&supply_opt)) {
         let value = *option::borrow(&supply_opt);
         spec {
@@ -204,7 +203,7 @@ module ol_framework::libra_coin {
     #[view]
     /// debugging view
     public fun supply_128(): u128 {
-      let supply_opt = coin::supply<LibraCoin>();
+      let supply_opt = coin::supply<LotusCoin>();
       if (option::is_some(&supply_opt)) {
         return *option::borrow(&supply_opt)
       };
@@ -213,14 +212,14 @@ module ol_framework::libra_coin {
 
 
     #[test_only]
-    public fun restore_mint_cap(diem_framework: &signer, mint_cap: MintCapability<LibraCoin>) {
+    public fun restore_mint_cap(diem_framework: &signer, mint_cap: MintCapability<LotusCoin>) {
         system_addresses::assert_diem_framework(diem_framework);
         move_to(diem_framework, MintCapStore { mint_cap });
     }
 
     #[test_only]
     public fun extract_mint_cap(diem_framework: &signer):
-    MintCapability<LibraCoin> acquires MintCapStore {
+    MintCapability<LotusCoin> acquires MintCapStore {
         system_addresses::assert_diem_framework(diem_framework);
         let MintCapStore { mint_cap } = move_from<MintCapStore>(@diem_framework);
         mint_cap
@@ -234,19 +233,19 @@ module ol_framework::libra_coin {
     public(friend) fun configure_accounts_for_test(
         diem_framework: &signer,
         core_resources: &signer,
-        mint_cap: MintCapability<LibraCoin>,
+        mint_cap: MintCapability<LotusCoin>,
     ){
         system_addresses::assert_diem_framework(diem_framework);
 
-        // Mint the core resource account LibraCoin for gas so it can execute system transactions.
-        coin::register<LibraCoin>(core_resources);
+        // Mint the core resource account LotusCoin for gas so it can execute system transactions.
+        coin::register<LotusCoin>(core_resources);
 
-        let coins = coin::mint<LibraCoin>(
+        let coins = coin::mint<LotusCoin>(
             1000000 * 1000000, // core resources can have 1M coins, MAX_U64 was
             // causing arthmetic errors calling supply() on downcast
             &mint_cap,
         );
-        coin::deposit<LibraCoin>(signer::address_of(core_resources), coins);
+        coin::deposit<LotusCoin>(signer::address_of(core_resources), coins);
 
         move_to(core_resources, MintCapStore { mint_cap });
         move_to(core_resources, Delegations { inner: vector::empty() });
@@ -271,8 +270,8 @@ module ol_framework::libra_coin {
         );
 
         let mint_cap = &borrow_global<MintCapStore>(account_addr).mint_cap;
-        let coins_minted = coin::mint<LibraCoin>(amount, mint_cap);
-        coin::deposit<LibraCoin>(dst_addr, coins_minted);
+        let coins_minted = coin::mint<LotusCoin>(amount, mint_cap);
+        coin::deposit<LotusCoin>(dst_addr, coins_minted);
     }
 
     #[test_only]
@@ -333,12 +332,12 @@ module ol_framework::libra_coin {
     use diem_framework::aggregator_factory;
 
     #[test_only]
-    public fun initialize_for_test(diem_framework: &signer): (BurnCapability<LibraCoin>, MintCapability<LibraCoin>) {
+    public fun initialize_for_test(diem_framework: &signer): (BurnCapability<LotusCoin>, MintCapability<LotusCoin>) {
         aggregator_factory::initialize_aggregator_factory_for_test(diem_framework);
-        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LibraCoin>(
+        let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LotusCoin>(
             diem_framework,
-            string::utf8(b"LibraCoin"),
-            string::utf8(b"LIBRA"),
+            string::utf8(b"LotusCoin"),
+            string::utf8(b"LOTUS"),
             8, /* decimals */
             true, /* monitor_supply */
         );
@@ -349,11 +348,11 @@ module ol_framework::libra_coin {
     }
     // This is particularly useful if the aggregator_factory is already initialized via another call path.
     #[test_only]
-    public fun initialize_for_test_without_aggregator_factory(diem_framework: &signer): (BurnCapability<LibraCoin>, MintCapability<LibraCoin>) {
-                let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LibraCoin>(
+    public fun initialize_for_test_without_aggregator_factory(diem_framework: &signer): (BurnCapability<LotusCoin>, MintCapability<LotusCoin>) {
+                let (burn_cap, freeze_cap, mint_cap) = coin::initialize_with_parallelizable_supply<LotusCoin>(
             diem_framework,
-            string::utf8(b"LibraCoin"),
-            string::utf8(b"LIBRA"),
+            string::utf8(b"LotusCoin"),
+            string::utf8(b"LOTUS"),
             8, /* decimals */
             true, /* monitor_supply */
         );

@@ -2,7 +2,7 @@
 module ol_framework::match_index {
   use diem_framework::system_addresses;
   use ol_framework::cumulative_deposits;
-  use ol_framework::libra_coin::{Self, LibraCoin};
+  use ol_framework::lotus_coin::{Self, LotusCoin};
   use ol_framework::ol_account;
   use diem_framework::coin::{Self, Coin};
   use diem_framework::transaction_fee;
@@ -99,7 +99,7 @@ module ol_framework::match_index {
     /// the root account can take a user coin, and match with accounts in index.
   // Note, this leave NO REMAINDER, and burns any rounding.
   // TODO: When the coin is sent, an attribution is also made to the payer.
-  public(friend) fun match_and_recycle(vm: &signer, coin: &mut Coin<LibraCoin>) acquires MatchIndex {
+  public(friend) fun match_and_recycle(vm: &signer, coin: &mut Coin<LotusCoin>) acquires MatchIndex {
 
     match_impl(vm, coin);
     // if there is anything remaining it's a superman 3 issue
@@ -108,7 +108,7 @@ module ol_framework::match_index {
     // which is what would happen if the coin didn't get emptied here
     let remainder_amount = coin::value(coin);
     if (remainder_amount > 0) {
-      let last_coin = libra_coin::extract(coin, remainder_amount);
+      let last_coin = lotus_coin::extract(coin, remainder_amount);
       // use pay_fee which doesn't track the sender, so we're not double counting the receipts, even though it's a small amount.
       transaction_fee::vm_pay_fee(vm, @ol_framework, last_coin);
     };
@@ -116,7 +116,7 @@ module ol_framework::match_index {
 
   /// the root account can take a user coin, and match with accounts in index.
   // TODO: When the coin is sent, an attribution is also made to the payer.
-  fun match_impl(vm: &signer, coin: &mut Coin<LibraCoin>) acquires MatchIndex {
+  fun match_impl(vm: &signer, coin: &mut Coin<LotusCoin>) acquires MatchIndex {
     system_addresses::assert_ol(vm);
 
     let list = { get_address_list() }; // NOTE devs, the added scope drops the borrow which is used below.
@@ -131,7 +131,7 @@ module ol_framework::match_index {
 
       let payee = *vector::borrow<address>(&list, i);
       let amount_to_payee = get_payee_share(payee, total_coin_value_to_recycle);
-      let coin_split = libra_coin::extract(coin, amount_to_payee);
+      let coin_split = lotus_coin::extract(coin, amount_to_payee);
       ol_account::deposit_coins(
           payee,
           coin_split,

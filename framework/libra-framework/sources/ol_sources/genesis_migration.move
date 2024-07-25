@@ -11,8 +11,8 @@ module ol_framework::genesis_migration {
   use diem_framework::coin;
   use ol_framework::ol_account;
   use ol_framework::validator_universe;
-  use ol_framework::libra_coin;
-  use ol_framework::libra_coin::LibraCoin;
+  use ol_framework::lotus_coin;
+  use ol_framework::lotus_coin::LotusCoin;
   use ol_framework::pledge_accounts;
   use diem_framework::system_addresses;
   // use diem_std::debug::print;
@@ -53,15 +53,15 @@ module ol_framework::genesis_migration {
 
     // Genesis validators should not receive ANY coins from MINT during testing, testnet, nor mainnet up to this point.
     // they will receive some from the infra escrow.
-    let genesis_balance = libra_coin::balance(user_addr);
+    let genesis_balance = lotus_coin::balance(user_addr);
 
     assert!(expected_initial_balance >= genesis_balance, error::invalid_state(EGENESIS_BALANCE_TOO_HIGH));
 
     let coins_to_mint = expected_initial_balance - genesis_balance;
-    let c = coin::vm_mint<LibraCoin>(framework_sig, coins_to_mint);
+    let c = coin::vm_mint<LotusCoin>(framework_sig, coins_to_mint);
     ol_account::deposit_coins(user_addr, c);
 
-    let new_balance = libra_coin::balance(user_addr);
+    let new_balance = lotus_coin::balance(user_addr);
 
     assert!(new_balance == expected_initial_balance, error::invalid_state(EBALANCE_MISMATCH));
 
@@ -77,7 +77,7 @@ module ol_framework::genesis_migration {
   public(friend) fun fork_escrow_init(framework_sig: &signer, user_sig: &signer,
   to_escrow: u64, lifetime_pledged: u64, lifetime_withdrawn: u64) {
     system_addresses::assert_diem_framework(framework_sig);
-    let c = coin::vm_mint<LibraCoin>(framework_sig, to_escrow);
+    let c = coin::vm_mint<LotusCoin>(framework_sig, to_escrow);
     pledge_accounts::migrate_pledge_account(framework_sig, user_sig, @ol_framework, c, lifetime_pledged,
     lifetime_withdrawn);
   }

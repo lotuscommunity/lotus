@@ -3,7 +3,7 @@
 module ol_framework::test_make_whole {
   use ol_framework::mock;
   use ol_framework::make_whole;
-  use ol_framework::libra_coin;
+  use ol_framework::lotus_coin;
   use ol_framework::ol_account;
   use diem_framework::reconfiguration;
   // use diem_std::debug::print;
@@ -15,14 +15,14 @@ module ol_framework::test_make_whole {
   fun test_incident_init(root: &signer, alice: &signer) {
     mock::genesis_n_vals(root, 1);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
 
     let alice_oops_amount = 5;
     let coin = ol_account::withdraw(alice, alice_oops_amount);
 
     make_whole::init_incident<TestOops>(alice, coin, false);
 
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357001);
 
   }
@@ -31,7 +31,7 @@ module ol_framework::test_make_whole {
   fun test_create_credit(root: &signer, alice: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
 
     let alice_oops_amount = 555;
     let coin = ol_account::withdraw(alice, alice_oops_amount);
@@ -39,7 +39,7 @@ module ol_framework::test_make_whole {
     make_whole::init_incident<TestOops>(alice, coin, false);
     make_whole::create_each_user_credit<TestOops>(alice, @0x1000b, 55);
 
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357001);
   }
 
@@ -47,7 +47,7 @@ module ol_framework::test_make_whole {
   fun test_claim_credit(root: &signer, alice: &signer, bob: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
     let (_, bob_balance_pre) = ol_account::balance(@0x1000b);
 
     let alice_oops_amount = 555;
@@ -62,7 +62,7 @@ module ol_framework::test_make_whole {
     let (_, bob_balance) = ol_account::balance(@0x1000b);
 
     assert!(bob_balance > bob_balance_pre, 7357001);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357002);
   }
 
@@ -72,7 +72,7 @@ module ol_framework::test_make_whole {
   fun test_not_owed(root: &signer, alice: &signer, carol: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
     // let (_, bob_balance_pre) = ol_account::balance(@0x1000b);
 
     let alice_oops_amount = 555;
@@ -84,7 +84,7 @@ module ol_framework::test_make_whole {
     // CAROL tries to claim it
     make_whole::claim_credit<TestOops>(carol, @0x1000a);
 
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357002);
   }
 
@@ -93,7 +93,7 @@ module ol_framework::test_make_whole {
   fun test_claim_credit_twice(root: &signer, alice: &signer, bob: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
     let (_, bob_balance_pre) = ol_account::balance(@0x1000b);
 
     let alice_oops_amount = 555;
@@ -109,7 +109,7 @@ module ol_framework::test_make_whole {
     let (_, bob_balance) = ol_account::balance(@0x1000b);
 
     assert!(bob_balance > bob_balance_pre, 7357001);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357002);
   }
 
@@ -118,7 +118,7 @@ module ol_framework::test_make_whole {
   fun test_expires_with_burn(root: &signer, alice: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
 
     let alice_oops_amount = 555;
     let coin = ol_account::withdraw(alice, alice_oops_amount);
@@ -131,7 +131,7 @@ module ol_framework::test_make_whole {
 
     make_whole::lazy_expire<TestOops>(@0x1000a);
 
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply != supply_pre, 7357002);
   }
 
@@ -140,7 +140,7 @@ module ol_framework::test_make_whole {
   fun test_expires_returns_to_sponsor(root: &signer, alice: &signer) {
     mock::genesis_n_vals(root, 2);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
     let (_, alice_pre_balance) = ol_account::balance(@0x1000a);
 
     let alice_oops_amount = 555;
@@ -158,7 +158,7 @@ module ol_framework::test_make_whole {
 
     make_whole::lazy_expire<TestOops>(@0x1000a);
 
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == supply_pre, 7357002);
 
     let (_, alice_post_balance) = ol_account::balance(@0x1000a);

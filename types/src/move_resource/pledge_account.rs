@@ -27,7 +27,7 @@ impl MoveResource for MyPledgesResource {}
 pub struct PledgeAccountResource {
     pub address_of_beneficiary: AccountAddress,
     pub amount: u64,
-    pub pledge: u64, // use u64 instead of Coin<LibraCoin>,
+    pub pledge: u64, // use u64 instead of Coin<LotusCoin>,
     pub epoch_of_last_deposit: u64,
     pub lifetime_pledged: u64,
     pub lifetime_withdrawn: u64,

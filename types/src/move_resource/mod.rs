@@ -9,7 +9,7 @@ pub mod donor_voice_txs;
 pub mod fee_maker;
 pub mod gas_coin;
 pub mod jail;
-pub mod libra_coin;
+pub mod lotus_coin;
 pub mod match_index;
 pub mod ol_account;
 pub mod pledge_account;

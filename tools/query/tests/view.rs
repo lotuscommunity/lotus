@@ -11,7 +11,7 @@ async fn libra_view_test() {
     let c = s.client();
 
     let q = QueryType::View {
-        function_id: "0x1::libra_coin::supply".to_string(),
+        function_id: "0x1::lotus_coin::supply".to_string(),
         type_args: None,
         args: None,
     };

@@ -2,7 +2,7 @@
 #[test_only]
 module ol_framework::test_burn {
   use ol_framework::mock;
-  use ol_framework::libra_coin;
+  use ol_framework::lotus_coin;
   use ol_framework::ol_account;
   use ol_framework::match_index;
   use ol_framework::burn;
@@ -22,12 +22,12 @@ module ol_framework::test_burn {
   fun burn_reduces_supply(root: &signer, alice: &signer) {
     mock::genesis_n_vals(root, 1);
     mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
 
     let alice_burn = 5;
     let c = ol_account::withdraw(alice, alice_burn);
     burn::burn_and_track(c);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == (supply_pre - alice_burn), 7357001);
   }
 
@@ -38,11 +38,11 @@ module ol_framework::test_burn {
     // the mint to alice will double the supply
     mock::ol_initialize_coin_and_fund_vals(root, 100000000, true);
 
-    let supply_pre = libra_coin::supply();
+    let supply_pre = lotus_coin::supply();
     // need to adjust this since the validator init increased the supply above
     // the final
-    libra_coin::test_set_final_supply(root, supply_pre);
-    let final = libra_coin::get_final_supply();
+    lotus_coin::test_set_final_supply(root, supply_pre);
+    let final = lotus_coin::get_final_supply();
     assert!(supply_pre == final, 7357000);
     // no change should happen before any burns
     let (unlocked, total) = ol_account::balance(@0x1000a);
@@ -56,7 +56,7 @@ module ol_framework::test_burn {
 
     let c = ol_account::withdraw(alice, alice_burn);
     burn::burn_and_track(c);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
     assert!(supply == (supply_pre - alice_burn), 7357003);
 
     let (unlocked, total) = ol_account::balance(@0x1000a);
@@ -205,7 +205,7 @@ module ol_framework::test_burn {
       let epoch_reward = genesis_mint; // just to be explicit
 
       mock::ol_initialize_coin_and_fund_vals(root, genesis_mint, true);
-      let supply_pre = libra_coin::supply();
+      let supply_pre = lotus_coin::supply();
       let mocked_tx_fees = 1000000 * 100; // 100 coins in tx fee account
       // 105 coins total
       assert!(supply_pre == mocked_tx_fees + (n_vals * genesis_mint), 73570001);
@@ -228,7 +228,7 @@ module ol_framework::test_burn {
       // So the current supply should be lower,
       // The the old supply was reduced by what was burned (the excess in tx bucket)
 
-      let supply_post = libra_coin::supply();
+      let supply_post = lotus_coin::supply();
 
       assert!(supply_post == supply_pre - amount_burned_excess_tx_account, 73570003);
 
@@ -318,7 +318,7 @@ module ol_framework::test_burn {
 
     #[test(root=@ol_framework, alice=@0x1000a)]
     fun track_fees(root: &signer, alice: address) {
-      // use ol_framework::libra_coin;
+      // use ol_framework::lotus_coin;
       let _vals = mock::genesis_n_vals(root, 1); // need to include eve to init funds
       mock::ol_initialize_coin_and_fund_vals(root, 10000, true);
 
@@ -369,7 +369,7 @@ module ol_framework::test_burn {
     mock::genesis_n_vals(root, 1);
     let genesis_mint_to_vals = 12345;
     mock::ol_initialize_coin_and_fund_vals(root, genesis_mint_to_vals, true);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
 
     let marlon_rando = @0x12345;
     let marlon_salary = 100;
@@ -391,7 +391,7 @@ module ol_framework::test_burn {
     mock::genesis_n_vals(root, 1);
     let genesis_mint_to_vals = 12345;
     mock::ol_initialize_coin_and_fund_vals(root, genesis_mint_to_vals, true);
-    let supply = libra_coin::supply();
+    let supply = lotus_coin::supply();
 
     let marlon_rando = @0x12345;
     let marlon_salary = 100;
