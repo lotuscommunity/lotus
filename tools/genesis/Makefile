@@ -5,7 +5,7 @@ BINS_PATH = $$HOME/.cargo/bin
 endif
 
 ifndef SOURCE_PATH
-SOURCE_PATH = $$HOME/libra-framework
+SOURCE_PATH = $$HOME/lotus
 endif
 
 ifndef DATA_PATH
