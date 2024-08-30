@@ -9,7 +9,7 @@ use diem_state_view::account_with_state_view::AsAccountWithStateView;
 use diem_storage_interface::{state_view::LatestDbStateCheckpointView, DbReader};
 use diem_types::{account_view::AccountView, transaction::Transaction};
 use indicatif::{ProgressBar, ProgressIterator};
-use libra_types::{
+use lotus_types::{
     exports::AccountAddress,
     legacy_types::legacy_recovery_v6::{self, AccountRole, LegacyRecoveryV6},
     move_resource::gas_coin::{GasCoinStoreResource, SlowWalletBalance},

@@ -1,7 +1,7 @@
 use diem_config::config::NodeConfig;
 use diem_forge::{LocalNode, Node, NodeExt, SwarmExt, Validator};
 use diem_logger::prelude::*;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_smoke_tests::lotus_smoke::lotusSmoke;
 use smoke_test::test_utils::{
     MAX_CATCH_UP_WAIT_SECS, MAX_CONNECTIVITY_WAIT_SECS, MAX_HEALTHY_WAIT_SECS,
 };
@@ -48,9 +48,9 @@ async fn wait_for_node(validator: &mut dyn Validator, expected_to_connect: usize
 async fn test_sync_only_mode() {
     let num_nodes: usize = 5;
 
-    let mut s = LibraSmoke::new(Some(num_nodes as u8), None)
+    let mut s = LotusSmoke::new(Some(num_nodes as u8), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env = &mut s.swarm;
 

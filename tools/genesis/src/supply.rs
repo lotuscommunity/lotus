@@ -1,5 +1,5 @@
 use indicatif::ProgressBar;
-use libra_types::{legacy_types::legacy_recovery_v6::LegacyRecoveryV6, ol_progress::OLProgress};
+use lotus_types::{legacy_types::legacy_recovery_v6::LegacyRecoveryV6, ol_progress::OLProgress};
 use std::time::Duration;
 
 #[derive(Debug, Clone, Default)]

@@ -4,7 +4,7 @@ use anyhow::Context;
 use diem_forge::SwarmExt;
 use diem_temppath::TempPath;
 use diem_types::transaction::Transaction;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
 use rescue::{diem_db_bootstrapper::BootstrapOpts, rescue_tx::RescueTxOpts};
 use smoke_test::test_utils::MAX_CATCH_UP_WAIT_SECS;
 use std::{fs, time::Duration};
@@ -18,9 +18,9 @@ use crate::support::{update_node_config_restart, wait_for_node};
 /// do want the granularity.
 async fn test_create_e2e_rescue_tx() -> anyhow::Result<()> {
     let num_nodes: usize = 5;
-    let mut s = LibraSmoke::new(Some(num_nodes as u8), None)
+    let mut s = LotusSmoke::new(Some(num_nodes as u8), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env: &mut diem_forge::LocalSwarm = &mut s.swarm;
 

@@ -7,7 +7,7 @@ use diem_sdk::{
     },
     types::{account_address::AccountAddress, validator_config::ValidatorConfig},
 };
-use libra_types::{
+use lotus_types::{
     move_resource::{gas_coin::SlowWalletBalance, txschedule::TxSchedule},
     type_extensions::client_ext::{entry_function_id, ClientExt},
 };
@@ -15,7 +15,7 @@ use serde_json::{json, Value};
 
 /// helper to get libra balance at a SlowWalletBalance type which shows
 /// total balance and the unlocked balance.
-pub async fn get_account_balance_libra(
+pub async fn get_account_balance_lotus(
     client: &Client,
     account: AccountAddress,
 ) -> anyhow::Result<SlowWalletBalance> {

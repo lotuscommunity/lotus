@@ -11,13 +11,13 @@ use serde::{Deserialize, Serialize};
 /// The balance resource held under an account.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 // #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub struct LibraCoinStoreResource {
+pub struct LotusCoinStoreResource {
     coin: u64,
     deposit_events: EventHandle,
     withdraw_events: EventHandle,
 }
 
-impl LibraCoinStoreResource {
+impl LotusCoinStoreResource {
     pub fn new(coin: u64, deposit_events: EventHandle, withdraw_events: EventHandle) -> Self {
         Self {
             coin,
@@ -39,7 +39,7 @@ impl LibraCoinStoreResource {
     }
 }
 
-impl MoveStructType for LibraCoinStoreResource {
+impl MoveStructType for LotusCoinStoreResource {
     const MODULE_NAME: &'static IdentStr = ident_str!("coin");
     const STRUCT_NAME: &'static IdentStr = ident_str!("CoinStore");
 
@@ -48,12 +48,12 @@ impl MoveStructType for LibraCoinStoreResource {
     }
 }
 
-impl MoveResource for LibraCoinStoreResource {}
+impl MoveResource for LotusCoinStoreResource {}
 
 // TODO: This might break reading from API maybe it must be diem_api_types::U64;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct LibraCoin {
+pub struct LotusCoin {
     pub value: u64,
 }
 
@@ -82,8 +82,8 @@ impl SlowWalletBalance {
     }
 
     // scale it to include decimals
-    pub fn scaled(&self) -> LibraBalanceDisplay {
-        LibraBalanceDisplay {
+    pub fn scaled(&self) -> LotusBalanceDisplay {
+        LotusBalanceDisplay {
             unlocked: cast_coin_to_decimal(self.unlocked),
             total: cast_coin_to_decimal(self.total),
         }
@@ -94,7 +94,7 @@ impl SlowWalletBalance {
 /// The slow wallet struct contains the coin value as it exists in the database which is without decimals. The decimal precision for LibraCoin is 6. So we need to scale it for human consumption.
 #[derive(Debug, Serialize, Deserialize)]
 
-pub struct LibraBalanceDisplay {
+pub struct LotusBalanceDisplay {
     pub unlocked: f64,
     pub total: f64,
 }

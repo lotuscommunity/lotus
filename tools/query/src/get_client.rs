@@ -1,7 +1,7 @@
 // TODO:
 
 use anyhow::Context;
-use libra_types::legacy_types::app_cfg::AppCfg;
+use lotus_types::legacy_types::app_cfg::AppCfg;
 use diem_sdk::rest_client::Client;
 use diem_sdk::types::chain_id::ChainId;
 

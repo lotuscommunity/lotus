@@ -10,13 +10,13 @@ pub mod util;
 use std::path::PathBuf;
 
 /// default directory name for all configs
-pub const GLOBAL_CONFIG_DIRECTORY_0L: &str = ".libra";
+pub const GLOBAL_CONFIG_DIRECTORY_LOTUS: &str = ".lotus";
 
 /// The default home folder
 pub fn global_config_dir() -> PathBuf {
     dirs::home_dir()
         .expect("weird...cannot get a home path")
-        .join(GLOBAL_CONFIG_DIRECTORY_0L)
+        .join(GLOBAL_CONFIG_DIRECTORY_LOTUS)
 }
 
 /// The coin scaling or decimal represenation of 1 coin in the VM. 1 coin is divisible by 1,000,000, or 6 decimals precision.

@@ -38,25 +38,25 @@
 ///////////////////////////////////////////////////////////////////////////
 
 
-    module ol_framework::pledge_accounts{
+    module lotus_framework::pledge_accounts{
         use std::vector;
         use std::signer;
         use std::error;
         use std::option::{Self, Option};
         use std::fixed_point64;
-        use ol_framework::lotus_coin::{Self, LotusCoin};
-        use ol_framework::ol_account;
-        use ol_framework::epoch_helper;
-        use ol_framework::burn;
+        use lotus_framework::lotus_coin::{Self, LotusCoin};
+        use lotus_framework::ol_account;
+        use lotus_framework::epoch_helper;
+        use lotus_framework::burn;
         use diem_framework::account;
         use diem_framework::coin;
         use diem_framework::system_addresses;
 
         // use diem_std::debug::print;
 
-        friend ol_framework::infra_escrow;
-        friend ol_framework::genesis_migration;
-        friend ol_framework::genesis;
+        friend lotus_framework::infra_escrow;
+        friend lotus_framework::genesis_migration;
+        friend lotus_framework::genesis;
 
         /// no policy at this address
         const ENO_BENEFICIARY_POLICY: u64 = 1;
@@ -361,8 +361,8 @@
             };
             option::destroy_none(c);
 
-            if (!exists<BeneficiaryPolicy>(@ol_framework)) return 0;
-            let bene_state = borrow_global_mut<BeneficiaryPolicy>(@ol_framework);
+            if (!exists<BeneficiaryPolicy>(@lotus_framework)) return 0;
+            let bene_state = borrow_global_mut<BeneficiaryPolicy>(@lotus_framework);
             let (is_found, idx) = vector::index_of(&bene_state.pledgers,
             pledge_account);
 
@@ -672,7 +672,7 @@
 
       #[view]
       public fun get_pledge_supply(): u64 acquires BeneficiaryRegistry, BeneficiaryPolicy {
-        let registry = borrow_global<BeneficiaryRegistry>(@ol_framework);
+        let registry = borrow_global<BeneficiaryRegistry>(@lotus_framework);
         let sum = 0;
         vector::for_each(registry.list, |a| {
           sum = sum + get_available_to_beneficiary(a);

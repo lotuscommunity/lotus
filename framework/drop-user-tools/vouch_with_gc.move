@@ -1,24 +1,24 @@
 
-module ol_framework::vouch {
+module lotus_framework::vouch {
     use std::signer;
     use std::vector;
-    use ol_framework::ancestry;
-    use ol_framework::ol_account;
-    use ol_framework::epoch_helper;
+    use lotus_framework::ancestry;
+    use lotus_framework::ol_account;
+    use lotus_framework::epoch_helper;
 
     use diem_framework::account;
     use diem_framework::system_addresses;
     use diem_framework::transaction_fee;
 
     friend diem_framework::genesis;
-    friend ol_framework::validator_universe;
-    friend ol_framework::proof_of_fee;
-    friend ol_framework::jail;
+    friend lotus_framework::validator_universe;
+    friend lotus_framework::proof_of_fee;
+    friend lotus_framework::jail;
 
     #[test_only]
-    friend ol_framework::mock;
+    friend lotus_framework::mock;
     #[test_only]
-    friend ol_framework::test_pof;
+    friend lotus_framework::test_pof;
 
     /// trying to vouch for yourself?
     const ETRY_SELF_VOUCH_REALLY: u64 = 1;
@@ -59,7 +59,7 @@ module ol_framework::vouch {
       if (!exists<MyVouches>(wanna_be_my_friend)) return;
       let epoch = epoch_helper::get_current_epoch();
       // this fee is paid to the system, cannot be reclaimed
-      let c = ol_account::withdraw(ill_be_your_friend, vouch_cost_microlibra());
+      let c = ol_account::withdraw(ill_be_your_friend, vouch_cost_microlotus());
       transaction_fee::user_pay_fee(ill_be_your_friend, c);
 
       let v = borrow_global_mut<MyVouches>(wanna_be_my_friend);
@@ -237,7 +237,7 @@ module ol_framework::vouch {
 
     // TODO: move to globals
     // the cost to verify a vouch. Coins are burned.
-    fun vouch_cost_microlibra(): u64 {
+    fun vouch_cost_microlotus(): u64 {
       1000
     }
 

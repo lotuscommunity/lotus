@@ -1,5 +1,5 @@
 [package]
-name = "libra-wallet"
+name = "lotus-wallet"
 version = { workspace = true }
 
 authors = { workspace = true }
@@ -25,7 +25,7 @@ diem-types = { workspace = true }
 hex = { workspace = true }
 hmac = { workspace = true }
 indoc = { workspace = true }
-libra-types = { workspace = true }
+lotus-types = { workspace = true }
 mirai-annotations = { workspace = true }
 pbkdf2 = { workspace = true }
 rand = { workspace = true }

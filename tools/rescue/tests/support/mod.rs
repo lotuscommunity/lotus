@@ -5,8 +5,8 @@ use diem_forge::{LocalNode, NodeExt, Validator};
 use diem_logger::info;
 use diem_temppath::TempPath;
 use diem_types::account_address::AccountAddress;
-use libra_framework::framework_cli::make_template_files;
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_framework::framework_cli::make_template_files;
+use lotus_types::core_types::app_cfg::TxCost;
 use smoke_test::test_utils::{MAX_CONNECTIVITY_WAIT_SECS, MAX_HEALTHY_WAIT_SECS};
 use std::{
     path::PathBuf,
@@ -15,10 +15,10 @@ use std::{
 };
 
 use diem_types::chain_id::NamedChain;
-use libra_framework::upgrade_fixtures;
-use libra_query::query_view;
-use libra_smoke_tests::{configure_validator, libra_smoke::LibraSmoke};
-use libra_txs::{
+use lotus_framework::upgrade_fixtures;
+use lotus_query::query_view;
+use lotus_smoke_tests::{configure_validator, lotus_smoke::LotusSmoke};
+use lotus_txs::{
     txs_cli::{TxsCli, TxsSub::Governance},
     txs_cli_governance::GovernanceTxs::{Propose, Resolve, Vote},
 };
@@ -45,7 +45,7 @@ pub fn make_script(remove_validator: AccountAddress) -> PathBuf {
         .join("..")
         .join("..")
         .join("framework")
-        .join("libra-framework");
+        .join("lotus-framework");
 
     let mut temp_script_path = TempPath::new();
     temp_script_path.create_as_dir().unwrap();
@@ -119,7 +119,7 @@ pub async fn wait_for_node(
 pub async fn upgrade_multiple_impl(
     dir_path: &str,
     modules: Vec<&str>,
-    smoke: &mut LibraSmoke,
+    smoke: &mut LotusSmoke,
 ) -> anyhow::Result<()> {
     upgrade_fixtures::testsuite_maybe_warmup_fixtures();
 
@@ -163,7 +163,7 @@ pub async fn upgrade_multiple_impl(
         mnemonic: None,
         test_private_key: Some(smoke.encoded_pri_key.clone()),
         chain_id: Some(NamedChain::TESTING),
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(smoke.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::prod_baseline_cost()),

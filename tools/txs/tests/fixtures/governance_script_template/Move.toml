@@ -7,7 +7,7 @@ license = ''
 [addresses]
 
 [dev-addresses]
-[dependencies.LibraFramework]
-local = '/root/libra-framework/framework/libra-framework'
+[dependencies.LotusFramework]
+local = '/root/lotus-framework/framework/lotus-framework'
 
 [dev-dependencies]

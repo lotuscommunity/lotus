@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail};
 use clap::Parser;
 use diem_config::config::NodeConfig;
-use libra_types::global_config_dir;
+use lotus_types::global_config_dir;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -72,5 +72,5 @@ fn find_a_config() -> anyhow::Result<PathBuf> {
     }
 
     // Error if neither validator.yaml nor fullnode.yaml is found
-    bail!("ERROR: you have no node *.yaml configured in the default directory $HOME/.libra/");
+    bail!("ERROR: you have no node *.yaml configured in the default directory $HOME/.lotus/");
 }

@@ -1,10 +1,10 @@
-use libra_query::query_type::QueryType;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_query::query_type::QueryType;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
 
 /// Testing the query library
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-async fn libra_view_test() {
-    let mut s = LibraSmoke::new(None, None)
+async fn lotus_view_test() {
+    let mut s = LotusSmoke::new(None, None)
         .await
         .expect("could not start swarm");
 

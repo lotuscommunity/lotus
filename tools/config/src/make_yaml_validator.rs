@@ -4,8 +4,8 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 
-use libra_types::global_config_dir;
-use libra_wallet::utils::write_to_user_only_file;
+use lotus_types::global_config_dir;
+use lotus_wallet::utils::write_to_user_only_file;
 
 pub const NODE_YAML_FILE: &str = "validator.yaml";
 
@@ -78,7 +78,7 @@ api:
 #[ignore] // TODO: not sure why this parsing is failing, when node can start with this file.
 async fn test_yaml() {
     use diem_config::config::NodeConfig;
-    use libra_wallet::utils::from_yaml;
+    use lotus_wallet::utils::from_yaml;
 
     let path = global_config_dir().join("test_yaml");
 

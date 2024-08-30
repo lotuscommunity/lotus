@@ -1,6 +1,6 @@
 //! Proof block data structure and operations
 
-use crate::core_types::{app_cfg::AppCfg, mode_ol::MODE_0L};
+use crate::core_types::{app_cfg::AppCfg, mode_lotus::MODE_LOTUS};
 
 use crate::exports::NamedChain;
 
@@ -23,7 +23,7 @@ use std::{
 
 /// The VDF security parameter.
 pub static GENESIS_VDF_SECURITY_PARAM: Lazy<u64> = Lazy::new(|| {
-    match *MODE_0L {
+    match *MODE_LOTUS {
         NamedChain::MAINNET => 512,
         NamedChain::TESTNET => 512, // TODO: Do we want a different one?
         _ => 512,
@@ -35,7 +35,7 @@ pub const FILENAME: &str = "proof";
 
 /// The VDF iterations. Combined with security parameter we have the "difficulty".
 pub static GENESIS_VDF_ITERATIONS: Lazy<u64> = Lazy::new(|| {
-    match *MODE_0L {
+    match *MODE_LOTUS {
         // Difficulty updated in V6
         // see ol/documentation/tower/difficulty_benchmarking.md
         NamedChain::MAINNET => 120_000_000, // 120M iterations, same as v5

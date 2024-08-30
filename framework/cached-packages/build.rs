@@ -1,21 +1,21 @@
-use libra_framework::release::ReleaseTarget;
+use lotus_framework::release::ReleaseTarget;
 use std::{env::current_dir, path::PathBuf};
 
 fn main() {
     // Set the below variable to skip the building step. This might be useful if the build
     // is broken so it can be debugged with the old outdated artifacts.
-    if std::env::var("LIBRA_BUILD_FRAMEWORK").is_ok() {
+    if std::env::var("LOTUS_BUILD_FRAMEWORK").is_ok() {
         let current_dir = current_dir().expect("Should be able to get current dir");
         // Get the previous directory
         let mut prev_dir = current_dir;
         prev_dir.pop();
         println!(
             "cargo:rerun-if-changed={}",
-            prev_dir.join("libra-framework").join("Move.toml").display()
+            prev_dir.join("lotus-framework").join("Move.toml").display()
         );
         println!(
             "cargo:rerun-if-changed={}",
-            prev_dir.join("libra-framework").join("sources").display()
+            prev_dir.join("lotus-framework").join("sources").display()
         );
 
         ReleaseTarget::Head

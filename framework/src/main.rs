@@ -2,7 +2,7 @@
 
 use clap::Parser;
 
-use libra_framework::framework_cli::FrameworkCli;
+use lotus_framework::framework_cli::FrameworkCli;
 
 fn main() -> anyhow::Result<()> {
     let cmd: FrameworkCli = FrameworkCli::parse();

@@ -45,7 +45,7 @@
 /// Breaking up is never easy, I know, but I have (I have to go) to go
 /// (This time I have to go, this time I know) knowing me, knowing you
 /// It's the best I can do
-module ol_framework::last_goodbye {
+module lotus_framework::last_goodbye {
   use std::signer;
   use std::option;
   use std::vector;
@@ -53,28 +53,28 @@ module ol_framework::last_goodbye {
   use std::debug::print;
   use diem_framework::coin;
   use diem_framework::system_addresses;
-  use ol_framework::burn;
-  use ol_framework::lotus_coin::LotusCoin;
-  use ol_framework::pledge_accounts;
-  use ol_framework::receipts;
-  use ol_framework::jail;
-  use ol_framework::vouch;
-  use ol_framework::slow_wallet;
+  use lotus_framework::burn;
+  use lotus_framework::lotus_coin::LotusCoin;
+  use lotus_framework::pledge_accounts;
+  use lotus_framework::receipts;
+  use lotus_framework::jail;
+  use lotus_framework::vouch;
+  use lotus_framework::slow_wallet;
 
   use diem_framework::account;
 
   #[test_only]
-  use ol_framework::ol_account;
+  use lotus_framework::ol_account;
   #[test_only]
-  use ol_framework::match_index;
+  use lotus_framework::match_index;
   #[test_only]
-  use ol_framework::validator_universe;
+  use lotus_framework::validator_universe;
 
 
   #[test_only]
-  friend ol_framework::test_boundary;
+  friend lotus_framework::test_boundary;
   #[test_only]
-  friend ol_framework::test_last_goodbye;
+  friend lotus_framework::test_last_goodbye;
 
 
 
@@ -225,7 +225,7 @@ module ol_framework::last_goodbye {
   // #[test(vm = @0x0, framework = @0x1, alice = @0x1000a, bob = @0x1111b)]
   //   fun bang_bang(vm: &signer, framework: &signer, alice: address, bob: &signer) {
   //     use diem_framework::account;
-  //     use ol_framework::mock;
+  //     use lotus_framework::mock;
 
   //     account::maybe_initialize_duplicate_originating(framework);
   //     mock::genesis_n_vals(framework, 1);
@@ -247,7 +247,7 @@ module ol_framework::last_goodbye {
   #[test(vm = @0x0, framework = @0x1, alice = @0x1111a)]
     fun k_bai(vm: &signer, framework: &signer, alice: &signer) {
       use diem_framework::account;
-      use ol_framework::mock;
+      use lotus_framework::mock;
 
       mock::ol_test_genesis(framework);
       let a_addr = signer::address_of(alice);
@@ -267,7 +267,7 @@ module ol_framework::last_goodbye {
     #[test(vm = @0x0, framework = @0x1, alice = @0x1111a)]
     fun k_bai_balance(vm: &signer, framework: &signer, alice: &signer) {
       use diem_framework::account;
-      use ol_framework::mock;
+      use lotus_framework::mock;
 
       mock::ol_test_genesis(framework);
 
@@ -296,8 +296,8 @@ module ol_framework::last_goodbye {
   #[test(vm = @0x0, framework = @0x1, alice = @0x1000a, bob = @0x1000b)]
   fun k_bai_global_balance(vm: &signer, framework: &signer, alice: &signer, bob: &signer) {
     use diem_framework::account;
-    use ol_framework::mock;
-    use ol_framework::lotus_coin;
+    use lotus_framework::mock;
+    use lotus_framework::lotus_coin;
 
     // Initialize the framework and set initial conditions
     mock::genesis_n_vals(framework, 1);
@@ -335,9 +335,9 @@ module ol_framework::last_goodbye {
 
   #[test(vm = @0x0,framework = @0x1, alice = @0x1000a, bob = @0x1000b)]
   fun k_bai_effect_on_global_burns(vm: &signer, framework: &signer, alice: &signer, bob: &signer) {
-    use ol_framework::mock;
-    use ol_framework::burn;
-    use ol_framework::lotus_coin;
+    use lotus_framework::mock;
+    use lotus_framework::burn;
+    use lotus_framework::lotus_coin;
     use std::signer;
 
     // Initialize the testing environment and mint coins to Bob's account.

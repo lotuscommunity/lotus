@@ -2,13 +2,13 @@ use anyhow::Context;
 use diem_forge::DiemPublicInfo;
 use diem_sdk::rest_client::Client;
 use diem_types::account_address::AccountAddress;
-use libra_cached_packages::libra_stdlib;
-use libra_types::{
+use lotus_cached_packages::lotus_stdlib;
+use lotus_types::{
     move_resource::gas_coin::SlowWalletBalance, type_extensions::client_ext::ClientExt,
 };
 
 /// Get the balance of the 0L coin
-pub async fn get_libra_balance(
+pub async fn get_lotus_balance(
     client: &Client,
     address: AccountAddress,
 ) -> anyhow::Result<SlowWalletBalance> {
@@ -26,14 +26,14 @@ pub async fn get_libra_balance(
     Ok(b)
 }
 
-pub async fn mint_libra(
+pub async fn mint_lotus(
     public_info: &mut DiemPublicInfo<'_>,
     addr: AccountAddress,
     amount: u64,
 ) -> anyhow::Result<()> {
     let payload = public_info
         .transaction_factory()
-        .payload(libra_stdlib::lotus_coin_mint_to_impl(addr, amount));
+        .payload(lotus_stdlib::lotus_coin_mint_to_impl(addr, amount));
 
     let mint_txn = public_info
         .root_account()
@@ -43,7 +43,7 @@ pub async fn mint_libra(
     Ok(())
 }
 
-pub async fn unlock_libra(
+pub async fn unlock_lotus(
     public_info: &mut DiemPublicInfo<'_>,
     addr: AccountAddress,
     amount: u64,
@@ -52,7 +52,7 @@ pub async fn unlock_libra(
     let unlock_payload =
         public_info
             .transaction_factory()
-            .payload(libra_stdlib::slow_wallet_smoke_test_vm_unlock(
+            .payload(lotus_stdlib::slow_wallet_smoke_test_vm_unlock(
                 addr, amount, amount,
             ));
 

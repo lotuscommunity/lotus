@@ -1,4 +1,4 @@
-// place this file in the libra-framework folder
+// place this file in the lotus-framework folder
 // this way we test pre and post upgrade.
 // pre upgrade this function will not be found.
 // your automated tests should remove this post-test

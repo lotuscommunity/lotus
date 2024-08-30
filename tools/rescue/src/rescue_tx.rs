@@ -4,7 +4,7 @@ use diem_types::{
     account_address::AccountAddress,
     transaction::{Script, Transaction, WriteSetPayload},
 };
-use libra_framework::builder::framework_generate_upgrade_proposal::libra_compile_script;
+use lotus_framework::builder::framework_generate_upgrade_proposal::lotus_compile_script;
 use move_core_types::language_storage::CORE_CODE_ADDRESS;
 use std::path::PathBuf;
 
@@ -40,7 +40,7 @@ impl RescueTxOpts {
 
         let gen_tx = if let Some(p) = &self.script_path {
             // let payload = custom_script(p, None, Some(5));
-            let (code, _hash) = libra_compile_script(p, false)?;
+            let (code, _hash) = lotus_compile_script(p, false)?;
 
             let wp = WriteSetPayload::Script {
                 execute_as: CORE_CODE_ADDRESS,

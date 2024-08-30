@@ -60,8 +60,8 @@ impl ReleaseTarget {
             ("move-stdlib", None),
             ("vendor-stdlib", None),
             (
-                "libra-framework",
-                Some("cached-packages/src/libra_framework_sdk_builder.rs"),
+                "lotus-framework",
+                Some("cached-packages/src/lotus_framework_sdk_builder.rs"),
             ),
         ];
         // Currently we don't have experimental packages only included in particular targets.
@@ -185,7 +185,7 @@ static NAMED_ADDRESSES: Lazy<BTreeMap<String, NumericalAddress>> = Lazy::new(|| 
     result.insert("diem_token_objects".to_owned(), four);
     result.insert("core_resources".to_owned(), resources);
     result.insert("vm_reserved".to_owned(), zero);
-    result.insert("ol_framework".to_owned(), one); /////// 0L /////////
+    result.insert("lotus_framework".to_owned(), one); /////// 0L /////////
     result
 });
 

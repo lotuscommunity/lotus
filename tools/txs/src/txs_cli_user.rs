@@ -11,12 +11,12 @@ use diem_types::{
     account_address::AccountAddress, account_config::CORE_CODE_ADDRESS,
     transaction::TransactionPayload,
 };
-use libra_cached_packages::libra_stdlib;
-use libra_types::{
+use lotus_cached_packages::lotus_stdlib;
+use lotus_types::{
     exports::{AuthenticationKey, Ed25519PrivateKey},
     type_extensions::client_ext::ClientExt,
 };
-use libra_wallet::account_keys::get_keys_from_prompt;
+use lotus_wallet::account_keys::get_keys_from_prompt;
 use serde::{Deserialize, Serialize};
 
 #[derive(clap::Subcommand)]
@@ -67,7 +67,7 @@ pub struct SetSlowTx {
 
 impl SetSlowTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::slow_wallet_user_set_slow();
+        let payload = lotus_stdlib::slow_wallet_user_set_slow();
         sender.sign_submit_wait(payload).await?;
         Ok(())
     }
@@ -187,7 +187,7 @@ pub fn rotate_key(
     let rotation_proof_signed_by_new_private_key =
         new_private_key.sign_arbitrary_message(&rotation_msg);
 
-    let payload = libra_stdlib::account_rotate_authentication_key(
+    let payload = lotus_stdlib::account_rotate_authentication_key(
         0,
         // Existing public key
         current_private_key.public_key().to_bytes().to_vec(),
@@ -227,7 +227,7 @@ pub fn rotate_key_delegated(
     let rotation_proof_signed_by_new_private_key =
         new_private_key.sign_arbitrary_message(&rotation_msg);
 
-    let payload = libra_stdlib::account_rotate_authentication_key_with_rotation_capability(
+    let payload = lotus_stdlib::account_rotate_authentication_key_with_rotation_capability(
         *target_account_address,
         0,
         new_public_key.to_bytes().to_vec(),
@@ -305,7 +305,7 @@ pub fn offer_rotation_capability_v2(
         .clone()
         .sign_arbitrary_message(&rotation_capability_proof_msg.unwrap());
 
-    let payload = libra_stdlib::account_offer_rotation_capability(
+    let payload = lotus_stdlib::account_offer_rotation_capability(
         rotation_proof_signed.to_bytes().to_vec(),
         0,
         offerer_account.public_key().to_bytes().to_vec(),
@@ -318,7 +318,7 @@ pub fn offer_rotation_capability_v2(
 pub fn revoke_rotation_capability(
     delegate_account: AccountAddress,
 ) -> anyhow::Result<TransactionPayload> {
-    let payload = libra_stdlib::account_revoke_rotation_capability(delegate_account);
+    let payload = lotus_stdlib::account_revoke_rotation_capability(delegate_account);
 
     Ok(payload)
 }

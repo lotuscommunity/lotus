@@ -4,11 +4,11 @@ use dialoguer::{Confirm, Input};
 use diem_crypto::x25519;
 use diem_genesis::{config::HostAndPort, keys::PublicIdentity};
 use diem_types::{chain_id::NamedChain, network_address::DnsName};
-use libra_types::{
+use lotus_types::{
     core_types::{app_cfg::AppCfg, network_playlist::NetworkPlaylist},
     ol_progress::OLProgress,
 };
-use libra_wallet::{utils::read_public_identity_file, validator_files::SetValidatorConfiguration};
+use lotus_wallet::{utils::read_public_identity_file, validator_files::SetValidatorConfiguration};
 use std::{
     path::{Path, PathBuf},
     str::FromStr,
@@ -23,7 +23,7 @@ pub async fn initialize_validator(
     chain_name: Option<NamedChain>,
 ) -> anyhow::Result<PublicIdentity> {
     let (.., pub_id, keys) =
-        libra_wallet::keys::refresh_validator_files(mnem, home_path.clone(), keep_legacy_address)?;
+        lotus_wallet::keys::refresh_validator_files(mnem, home_path.clone(), keep_legacy_address)?;
     OLProgress::complete("initialized validator key files");
 
     // TODO: set validator fullnode configs. Not NONE
@@ -50,7 +50,7 @@ pub async fn initialize_validator(
         "could not initialize configs at {}",
         cfg.workspace.node_home.to_str().unwrap()
     ))?;
-    OLProgress::complete("saved a user libra-cli-config.yaml file locally");
+    OLProgress::complete("saved a user lotus-cli-config.yaml file locally");
 
     Ok(pub_id)
 }
@@ -176,7 +176,7 @@ pub async fn vfn_dialogue(
 
 #[tokio::test]
 async fn test_validator_files_config() {
-    use libra_types::global_config_dir;
+    use lotus_types::global_config_dir;
     let alice_mnem = "talent sunset lizard pill fame nuclear spy noodle basket okay critic grow sleep legend hurry pitch blanket clerk impose rough degree sock insane purse".to_string();
     let h = HostAndPort::local(6180).unwrap();
     let test_path = global_config_dir().join("test_genesis");

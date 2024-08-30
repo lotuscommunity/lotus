@@ -6,7 +6,7 @@ use diem_sdk::move_types::{
     transaction_argument::convert_txn_args,
 };
 use diem_types::transaction::{EntryFunction, TransactionArgument, TransactionPayload};
-use libra_types::util::parse_function_id;
+use lotus_types::util::parse_function_id;
 
 impl Sender {
     pub async fn generic(

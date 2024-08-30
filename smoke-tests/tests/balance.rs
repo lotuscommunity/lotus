@@ -1,7 +1,7 @@
 use diem_forge::Swarm;
 use diem_sdk::types::LocalAccount;
-use libra_framework::release::ReleaseTarget;
-use libra_smoke_tests::helpers::{get_libra_balance, mint_libra};
+use lotus_framework::release::ReleaseTarget;
+use lotus_smoke_tests::helpers::{get_lotus_balance, mint_lotus};
 use smoke_test::smoke_test_environment::new_local_swarm_with_release;
 
 #[tokio::test]
@@ -15,13 +15,13 @@ async fn sanity_balances() -> anyhow::Result<()> {
     let _account = LocalAccount::new(v.peer_id(), pri_key.private_key(), 0);
     let mut public_info: diem_forge::DiemPublicInfo = swarm.diem_public_info();
 
-    let bal_vec = get_libra_balance(public_info.client(), address).await?;
+    let bal_vec = get_lotus_balance(public_info.client(), address).await?;
     assert_eq!(bal_vec.unlocked, 0, "expected zero balance at genesis");
     assert_eq!(bal_vec.total, 0, "expected zero balance at genesis");
 
-    let _ = mint_libra(&mut public_info, address, 12345).await;
+    let _ = mint_lotus(&mut public_info, address, 12345).await;
 
-    let bal_vec = get_libra_balance(public_info.client(), address).await?;
+    let bal_vec = get_lotus_balance(public_info.client(), address).await?;
     assert_eq!(bal_vec.total, 12345u64, "expected balance of 12345");
 
     Ok(())

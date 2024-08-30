@@ -5,7 +5,7 @@ use diem_types::{
     waypoint::Waypoint,
     PeerId,
 };
-use libra_types::global_config_dir;
+use lotus_types::global_config_dir;
 use serde::Deserialize;
 use std::{
     collections::HashMap,
@@ -73,7 +73,7 @@ pub async fn fetch_seed_addresses(
     url: Option<&str>,
 ) -> anyhow::Result<HashMap<PeerId, Vec<NetworkAddress>>> {
     let u = url.unwrap_or(
-        "https://raw.githubusercontent.com/0LNetworkCommunity/seed-peers/main/seed_peers.yaml",
+        "https://raw.githubusercontent.com/lotuscommunity/seed-peers/main/seed_peers.yaml",
     );
     // Fetch and parse the seed addresses from the URL
     let res = reqwest::get(u).await?;
@@ -204,7 +204,7 @@ pub async fn download_genesis(home_dir: Option<PathBuf>) -> anyhow::Result<()> {
     );
     // Fetch the latest waypoint
     let blob_bytes = reqwest::get(&latest_path).await?.bytes().await?;
-    let home = home_dir.unwrap_or_else(libra_types::global_config_dir);
+    let home = home_dir.unwrap_or_else(lotus_types::global_config_dir);
     let genesis_dir = home.join("genesis/");
     let p = genesis_dir.join("genesis.blob");
 
@@ -242,7 +242,7 @@ pub async fn get_genesis_waypoint(home_dir: Option<PathBuf>) -> anyhow::Result<W
 
     // Fetch the latest waypoint
     let wp_string = reqwest::get(&latest_path).await?.text().await?;
-    let home = home_dir.unwrap_or_else(libra_types::global_config_dir);
+    let home = home_dir.unwrap_or_else(lotus_types::global_config_dir);
     let genesis_dir = home.join("genesis/");
     let p = genesis_dir.join("waypoint.txt");
 

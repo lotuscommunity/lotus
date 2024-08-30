@@ -40,7 +40,7 @@ runs:
     - name: also rust cache
       uses: Swatinem/rust-cache@v2.7.0
       with:
-        shared-key: "libra"
+        shared-key: "lotus"
         cache-on-failure: "true"
 
     - name: export diem-node DIEM_FORGE_NODE_BIN_PATH
@@ -50,7 +50,7 @@ runs:
     - name: install diem-node (for smoke tests)
       shell: bash
       run: >
-        wget -O $DIEM_FORGE_NODE_BIN_PATH https://github.com/0LNetworkCommunity/diem/releases/latest/download/diem-node &&
+        wget -O $DIEM_FORGE_NODE_BIN_PATH https://github.com/lotuscommunity/diem/releases/latest/download/diem-node &&
         sudo chmod 755 $DIEM_FORGE_NODE_BIN_PATH &&
         echo $DIEM_FORGE_NODE_BIN_PATH &&
         ls -l $DIEM_FORGE_NODE_BIN_PATH

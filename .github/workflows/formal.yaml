@@ -37,7 +37,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2.7.3
         with:
-          shared-key: "libra-framework"
+          shared-key: "lotus-framework"
           cache-all-crates: true
 
       - name: install prover dependencies
@@ -46,7 +46,7 @@ jobs:
 
       - name: install diem (for move tests)
         run: |
-          wget -O ${{github.workspace}}/diem https://github.com/0LNetworkCommunity/diem/releases/latest/download/diem &&
+          wget -O ${{github.workspace}}/diem https://github.com/lotuscommunity/diem/releases/latest/download/diem &&
           chmod +x ${{github.workspace}}/diem &&
           cp ${{github.workspace}}/diem ~/.cargo/bin
 

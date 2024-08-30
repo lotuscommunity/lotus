@@ -3,21 +3,22 @@ mod support;
 use diem_state_view::account_with_state_view::AsAccountWithStateView;
 use diem_storage_interface::state_view::LatestDbStateCheckpointView;
 use diem_types::{account_view::AccountView, chain_id::NamedChain};
-use libra_framework::head_release_bundle;
-use libra_genesis_tools::{
+use diem_vm::data_cache::AsMoveResolver;
+use lotus_framework::head_release_bundle;
+use lotus_genesis_tools::{
     compare,
     genesis::make_recovery_genesis_from_vec_legacy_recovery,
     genesis_reader, parse_json,
     parse_json::recovery_file_parse,
     supply::{self},
-    vm::libra_genesis_default,
+    vm::lotus_genesis_default,
 };
-use libra_types::{
+use lotus_types::{
     exports::ChainId, legacy_types::legacy_recovery_v6::AccountRole,
     move_resource::gas_coin::GasCoinStoreResource,
 };
-use libra_types::move_resource::coin_info::GasCoinInfoResource;
-use libra_types::move_resource::lotus_coin::LotusCoinStoreResource;
+use lotus_types::move_resource::coin_info::GasCoinInfoResource;
+use lotus_types::move_resource::lotus_coin::LotusCoinStoreResource;
 use support::{path_utils::json_path, test_vals};
 
 #[test]
@@ -40,7 +41,7 @@ fn test_correct_supply_arithmetic_all() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::mainnet(),
-        &libra_genesis_default(NamedChain::MAINNET),
+        &lotus_genesis_default(NamedChain::MAINNET),
     )
     .unwrap();
 
@@ -73,7 +74,7 @@ fn test_correct_supply_arithmetic_all() {
 #[test]
 // test that a genesis blob created from struct, will actually contain the data
 fn test_drop_all() {
-    use libra_types::exports::AccountAddress;
+    use lotus_types::exports::AccountAddress;
     let genesis_vals = test_vals::get_test_valset(4);
 
     let path = json_path()
@@ -111,7 +112,7 @@ fn test_drop_all() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::mainnet(),
-        &libra_genesis_default(NamedChain::MAINNET),
+        &lotus_genesis_default(NamedChain::MAINNET),
     )
     .unwrap();
 
@@ -136,9 +137,9 @@ fn test_drop_all() {
 }
 
 #[test]
-// test that a genesis blob created from struct, will actually contain the data
-fn test_libra_to_lotus_convert() {
-    use libra_types::exports::AccountAddress;
+// test the libra to lotus conversion.
+fn test_lotus_to_lotus_convert() {
+    use lotus_types::exports::AccountAddress;
     let genesis_vals = test_vals::get_test_valset(4);
 
     let path = json_path()
@@ -176,7 +177,7 @@ fn test_libra_to_lotus_convert() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::mainnet(),
-        &libra_genesis_default(NamedChain::MAINNET),
+        &lotus_genesis_default(NamedChain::MAINNET),
     )
         .unwrap();
 
@@ -222,9 +223,9 @@ fn test_libra_to_lotus_convert() {
 
     println!("{:?}", on_chain_balance);
 
-    let on_chain_libra = account_state_view
-        .get_move_resource::<GasCoinInfoResource>()
+    let on_chain_lotus = account_state_view
+        .get_move_resource::<LotusCoinStoreResource>()
         .expect("should have move resource");
 
-    println!("{:?}", on_chain_libra);
+    println!("{:?}", on_chain_lotus);
 }

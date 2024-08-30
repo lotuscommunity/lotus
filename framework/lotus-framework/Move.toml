@@ -1,0 +1,16 @@
+[package]
+name = "LotusFramework"
+version = "1.0.0"
+
+[addresses]
+std = "0x1"
+diem_std = "0x1"
+diem_framework = "0x1"
+diem_token = "0x3"
+core_resources = "0xA550C18"
+vm_reserved = "0x0"
+lotus_framework = "0x1"
+root = "0x1"
+
+[dependencies]
+VendorStdlib = { local = "../vendor-stdlib" }

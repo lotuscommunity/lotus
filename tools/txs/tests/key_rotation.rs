@@ -1,11 +1,11 @@
 use diem_sdk::crypto::{ed25519::Ed25519PrivateKey, Uniform, ValidCryptoMaterialStringExt};
-use libra_smoke_tests::libra_smoke::LibraSmoke;
-use libra_txs::{
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
+use lotus_txs::{
     submit_transaction::Sender,
     txs_cli_user::{RotateKeyTx, RotationCapabilityTx},
 };
-use libra_types::core_types::app_cfg::Profile;
-use libra_wallet::account_keys;
+use lotus_types::core_types::app_cfg::Profile;
+use lotus_wallet::account_keys;
 
 // Scenario: We have an initial validator, Val 0 with a random address
 // create an account for Alice (with a known address and mnemonic)
@@ -15,9 +15,9 @@ use libra_wallet::account_keys;
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn rotate_key() -> anyhow::Result<()> {
     // create libra swarm and get app config for the first validator
-    let mut ls = LibraSmoke::new(Some(1), None)
+    let mut ls = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
     let mut val_app_cfg = ls.first_account_app_cfg()?;
 
     // get an appcfg struct from Alice's mnemonic
@@ -92,9 +92,9 @@ async fn rotate_key() -> anyhow::Result<()> {
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn offer_rotation_capability() -> anyhow::Result<()> {
     // create libra swarm and get app config for the first validator
-    let mut ls = LibraSmoke::new(Some(1), None)
+    let mut ls = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
     let mut val_app_cfg = ls.first_account_app_cfg()?;
 
     // get an appcfg struct from Alice's mnemonic
@@ -193,9 +193,9 @@ async fn offer_rotation_capability() -> anyhow::Result<()> {
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn revoke_rotation_capability() -> anyhow::Result<()> {
     // create libra swarm and get app config for the first validator
-    let mut ls = LibraSmoke::new(Some(1), None)
+    let mut ls = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
     let mut val_app_cfg = ls.first_account_app_cfg()?;
 
     // get an appcfg struct from Alice's mnemonic

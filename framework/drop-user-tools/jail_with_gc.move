@@ -40,25 +40,25 @@
 // the account, Bob will lose the deposit.
 
 
-module ol_framework::jail {
+module lotus_framework::jail {
   use diem_framework::account;
   use diem_framework::system_addresses;
   use std::signer;
   use std::vector;
   use std::error;
-  use ol_framework::vouch;
-  use ol_framework::stake;
+  use lotus_framework::vouch;
+  use lotus_framework::stake;
 
-  friend ol_framework::validator_universe;
-  friend ol_framework::epoch_boundary;
-  friend ol_framework::last_goodbye;
+  friend lotus_framework::validator_universe;
+  friend lotus_framework::epoch_boundary;
+  friend lotus_framework::last_goodbye;
 
   #[test_only]
-  friend ol_framework::test_pof;
+  friend lotus_framework::test_pof;
   #[test_only]
-  friend ol_framework::test_jail;
+  friend lotus_framework::test_jail;
   #[test_only]
-  friend ol_framework::test_boundary;
+  friend lotus_framework::test_boundary;
 
   /// Validator is misconfigured cannot unjail.
   const EVALIDATOR_CONFIG: u64 = 1;

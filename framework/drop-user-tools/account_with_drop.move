@@ -25,9 +25,9 @@ module diem_framework::account {
     friend diem_framework::genesis;
     friend diem_framework::transaction_validation;
     //////// 0L ////////
-    friend ol_framework::ol_account;
+    friend lotus_framework::ol_account;
     friend diem_framework::multisig_account;
-    friend ol_framework::last_goodbye;
+    friend lotus_framework::last_goodbye;
 
     #[test_only]
     friend diem_framework::diem_account;
@@ -98,7 +98,7 @@ module diem_framework::account {
       system_addresses::assert_ol(root);
       let addr = signer::address_of(user);
 
-      let duplicate_table = &mut borrow_global_mut<MigrateOriginatingAddress>(@ol_framework).duplicates_map;
+      let duplicate_table = &mut borrow_global_mut<MigrateOriginatingAddress>(@lotus_framework).duplicates_map;
       let tomb_auth_as_addr = from_bcs::to_address(tomb_auth());
       if (table::contains(duplicate_table, tomb_auth_as_addr)) {
         let entry = table::borrow_mut(duplicate_table, tomb_auth_as_addr);
@@ -118,7 +118,7 @@ module diem_framework::account {
     // migrate on the fly only if we need it in migration
     public(friend) fun maybe_initialize_duplicate_originating(diem_framework: &signer) {
       system_addresses::assert_diem_framework(diem_framework);
-      if (!exists<MigrateOriginatingAddress>(@ol_framework)) {
+      if (!exists<MigrateOriginatingAddress>(@lotus_framework)) {
         move_to(diem_framework, MigrateOriginatingAddress {
           duplicates_map: table::new(),
         });
@@ -375,7 +375,7 @@ module diem_framework::account {
         // The city fathers they're trying to endorse
         // The reincarnation of Paul Revere's horse
         // But the town has no need to be nervous.
-        let duplicate_table = &borrow_global<MigrateOriginatingAddress>(@ol_framework).duplicates_map;
+        let duplicate_table = &borrow_global<MigrateOriginatingAddress>(@lotus_framework).duplicates_map;
 
         let tomb_auth_as_addr = from_bcs::to_address(tomb_auth());
         if (table::contains(duplicate_table, tomb_auth_as_addr)) {
@@ -809,7 +809,7 @@ module diem_framework::account {
               table::remove(address_map, curr_auth_key);
 
               // now we begin populating the struct for the duplicate cases.
-              let duplicate_table = &mut borrow_global_mut<MigrateOriginatingAddress>(@ol_framework).duplicates_map;
+              let duplicate_table = &mut borrow_global_mut<MigrateOriginatingAddress>(@lotus_framework).duplicates_map;
               // the table doesn't have any duplicates, let put the first two in it.
               // we assume the duplicates table is empty, this is the default path
               if (!table::contains(duplicate_table, curr_auth_key)) {

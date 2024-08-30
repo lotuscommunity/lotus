@@ -1,8 +1,8 @@
 //! Key generation
 use crate::core::{mnemonic::Mnemonic, wallet_library::WalletLibrary};
 use diem_types::chain_id::NamedChain;
-use libra_types::{
-    core_types::mode_ol::MODE_0L,
+use lotus_types::{
+    core_types::mode_lotus::MODE_LOTUS,
     exports::{AccountAddress, AuthenticationKey},
 };
 use std::{env, process::exit};
@@ -30,7 +30,7 @@ pub fn get_account_from_prompt() -> (AuthenticationKey, AccountAddress, WalletLi
 
     let test_env_mnem = env::var("MNEM");
     // if we are in debugging or CI mode
-    let mnem = match (*MODE_0L == NamedChain::TESTING) && test_env_mnem.is_ok() {
+    let mnem = match (*MODE_LOTUS == NamedChain::TESTING) && test_env_mnem.is_ok() {
         true => {
             println!("Debugging mode, using mnemonic from env variable, $MNEM");
             test_env_mnem.unwrap().trim().to_string()

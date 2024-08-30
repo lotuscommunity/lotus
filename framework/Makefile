@@ -17,14 +17,14 @@ prove:
 	find sources -type f -name "*.move" ! -name "*.spec.move" | sed 's/\.move$$//' | \
 	xargs -I {} sh -c 'echo "Testing file: {}"; diem move prove -f {} || echo "Error in file: {}"'
 
-	@cd libra-framework && \
+	@cd lotus-framework && \
 	for i in ${PROVER_TESTS} ${VENDOR_TESTS}; do \
 			diem move prove -f $$i; \
 	done
 
-#TODO: automate libra-framework verification once we have identified and fixed specifications	
-# @cd libra-framework && \
-# echo "Testing libra-framework" && \
+#TODO: automate lotus-framework verification once we have identified and fixed specifications
+# @cd lotus-framework && \
+# echo "Testing lotus-framework" && \
 # find . -type f -name "*.move" ! -name "*.spec.move" -print0 | \
 # awk -v RS='\0' -v ORS='\0' '{sub(/^\.\//,""); print}' | \
 # sort -uz | \

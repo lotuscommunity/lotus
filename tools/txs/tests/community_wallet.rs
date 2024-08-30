@@ -2,13 +2,13 @@ use diem_sdk::crypto::ValidCryptoMaterialStringExt;
 use diem_sdk::types::LocalAccount;
 use diem_temppath::TempPath;
 use diem_types::account_address::AccountAddress;
-use libra_query::query_view;
-use libra_smoke_tests::{configure_validator, libra_smoke::LibraSmoke};
-use libra_txs::txs_cli::{TxsCli, TxsSub, TxsSub::Transfer};
-use libra_txs::txs_cli_community::{
+use lotus_query::query_view;
+use lotus_smoke_tests::{configure_validator, lotus_smoke::LotusSmoke};
+use lotus_txs::txs_cli::{TxsCli, TxsSub, TxsSub::Transfer};
+use lotus_txs::txs_cli_community::{
     AdminTx, CageTx, ClaimTx, CommunityTxs, InitTx, MigrateOfferTx, OfferTx,
 };
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_types::core_types::app_cfg::TxCost;
 use std::path::PathBuf;
 use url::Url;
 
@@ -293,7 +293,7 @@ async fn new_community_wallet_cant_transfer() -> Result<(), anyhow::Error> {
 async fn create_community_wallet() -> Result<(), anyhow::Error> {
     let (mut s, dir, _account_address, comm_wallet_pk, comm_wallet_addr) =
         setup_environment().await;
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
 
     // SETUP ADMIN SIGNERS
     // 1. Generate and fund 5 new accounts from validators to ensure their on-chain presence for signing operations.
@@ -510,7 +510,7 @@ async fn create_community_wallet() -> Result<(), anyhow::Error> {
 async fn update_community_wallet_offer() -> Result<(), anyhow::Error> {
     let (mut s, dir, _account_address, comm_wallet_pk, comm_wallet_addr) =
         setup_environment().await;
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
 
     // SETUP ADMIN SIGNERS
     // 1. Generate and fund 5 new accounts from validators to ensure their on-chain presence for signing operations.
@@ -809,7 +809,7 @@ async fn add_community_wallet_admin() -> Result<(), anyhow::Error> {
     // 1. Setup environment
     let (mut smoke, dir, _account_address, comm_wallet_pk, comm_wallet_addr) =
         setup_environment().await;
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
     let api_endpoint = smoke.api_endpoint.clone();
     let client = smoke.client();
 
@@ -864,7 +864,7 @@ async fn add_community_wallet_admin() -> Result<(), anyhow::Error> {
         mnemonic: None,
         test_private_key: Some(private_key_of_first_signer),
         chain_id: None,
-        config_path: Some(dir.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(dir.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -924,7 +924,7 @@ async fn add_community_wallet_admin() -> Result<(), anyhow::Error> {
             mnemonic: None,
             test_private_key: Some(private_key_of_signer),
             chain_id: None,
-            config_path: Some(dir.path().to_owned().join("libra-cli-config.yaml")),
+            config_path: Some(dir.path().to_owned().join("lotus-cli-config.yaml")),
             url: Some(api_endpoint.clone()),
             tx_profile: None,
             tx_cost: Some(TxCost::default_baseline_cost()),
@@ -1032,7 +1032,7 @@ async fn remove_community_wallet_admin() -> Result<(), anyhow::Error> {
     // 1. Setup environment
     let (mut smoke, dir, _account_address, comm_wallet_pk, comm_wallet_addr) =
         setup_environment().await;
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
     let api_endpoint = smoke.api_endpoint.clone();
     let client = smoke.client();
 
@@ -1102,7 +1102,7 @@ async fn remove_community_wallet_admin() -> Result<(), anyhow::Error> {
         mnemonic: None,
         test_private_key: Some(private_key_of_first_signer),
         chain_id: None,
-        config_path: Some(dir.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(dir.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -1163,7 +1163,7 @@ async fn remove_community_wallet_admin() -> Result<(), anyhow::Error> {
             mnemonic: None,
             test_private_key: Some(private_key_of_signer),
             chain_id: None,
-            config_path: Some(dir.path().to_owned().join("libra-cli-config.yaml")),
+            config_path: Some(dir.path().to_owned().join("lotus-cli-config.yaml")),
             url: Some(api_endpoint.clone()),
             tx_profile: None,
             tx_cost: Some(TxCost::default_baseline_cost()),
@@ -1521,11 +1521,11 @@ async fn liquidate_community_wallet() {
 
 // UTILITY //
 
-async fn setup_environment() -> (LibraSmoke, TempPath, AccountAddress, String, AccountAddress) {
+async fn setup_environment() -> (LotusSmoke, TempPath, AccountAddress, String, AccountAddress) {
     let dir = diem_temppath::TempPath::new();
-    let mut s = LibraSmoke::new(Some(5), None)
+    let mut s = LotusSmoke::new(Some(5), None)
         .await
-        .expect("Could not start libra smoke");
+        .expect("Could not start lotus smoke");
 
     configure_validator::init_val_config_files(&mut s.swarm, 0, dir.path().to_owned())
         .await
@@ -1545,7 +1545,7 @@ async fn setup_environment() -> (LibraSmoke, TempPath, AccountAddress, String, A
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(dir.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(dir.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -1770,7 +1770,7 @@ async fn setup_community_wallet_caged(
 async fn test_offer_migration() -> Result<(), anyhow::Error> {
     // 1. Setup environment
     let (mut smoke, dir, _account_address, _, _) = setup_environment().await;
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
     let api_endpoint = smoke.api_endpoint.clone();
     // let client = smoke.client();
 

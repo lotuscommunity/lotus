@@ -16,7 +16,7 @@ use diem_types::{
 };
 use diem_vm::DiemVM;
 use indicatif::ProgressBar;
-use libra_types::{
+use lotus_types::{
     exports::{AccountAddress, Waypoint},
     move_resource::coin_info::GasCoinInfoResource,
     ol_progress::OLProgress,
@@ -149,7 +149,7 @@ fn test_db_rw() {
     use diem_executor::db_bootstrapper::maybe_bootstrap;
     use diem_temppath::TempPath;
     use diem_types::state_store::state_key::StateKey;
-    use libra_types::exports::AccountAddress;
+    use lotus_types::exports::AccountAddress;
 
     let tmp_dir = TempPath::new().path().to_owned();
 

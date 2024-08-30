@@ -1,5 +1,5 @@
 [package]
-name = "libra-cached-packages"
+name = "lotus-cached-packages"
 description = "Builds framework packages for caching in builds and tests"
 version = { workspace = true }
 
@@ -15,9 +15,9 @@ rust-version = { workspace = true }
 [dependencies]
 bcs = { workspace = true }
 # Note the generated SDK code uses hard coded `diemtypes`
-diem-types = { git = "https://github.com/0LNetworkCommunity/diem.git", branch = "release" }
+diem-types = { git = "https://github.com/lotuscommunity/diem.git", branch = "release" }
 move-core-types = { workspace = true }
 once_cell = { workspace = true }
 
 [build-dependencies]
-libra-framework = { workspace = true }
+lotus-framework = { workspace = true }

@@ -4,13 +4,13 @@ use crate::submit_transaction::Sender;
 use anyhow::{bail, Context};
 use diem_genesis::config::OperatorConfiguration;
 use diem_types::account_address::AccountAddress;
-use libra_cached_packages::libra_stdlib::EntryFunctionCall::{
+use lotus_cached_packages::lotus_stdlib::EntryFunctionCall::{
     self, JailUnjailByVoucher, ProofOfFeePofRetractBid, ProofOfFeePofUpdateBid,
     StakeUpdateNetworkAndFullnodeAddresses, ValidatorUniverseRegisterValidator, VouchRevoke,
     VouchVouchFor,
 };
-use libra_types::global_config_dir;
-use libra_wallet::validator_files::OPERATOR_FILE;
+use lotus_types::global_config_dir;
+use lotus_wallet::validator_files::OPERATOR_FILE;
 use std::{fs, path::PathBuf};
 
 #[derive(clap::Subcommand)]

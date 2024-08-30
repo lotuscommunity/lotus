@@ -11,11 +11,11 @@ use diem_sdk::{
     types::{account_address::AccountAddress, AccountKey},
 };
 use indoc::indoc;
-use libra_types::{
+use lotus_types::{
     core_types::app_cfg::{AppCfg, TxCost, TxType},
     exports::{ChainId, NamedChain},
 };
-use libra_wallet::account_keys::{get_keys_from_mnem, get_keys_from_prompt};
+use lotus_wallet::account_keys::{get_keys_from_mnem, get_keys_from_prompt};
 use std::path::PathBuf;
 use url::Url;
 
@@ -174,7 +174,7 @@ impl TxsCli {
 
         // Handle mutually exclusive options for transaction cost
         if self.tx_cost.is_some() && self.tx_profile.is_some() {
-            println!("ERROR: --tx-cost and --tx-profile are mutually exclusive. Either set the costs explicitly or choose a profile in libra-cli-config.yaml, exiting");
+            println!("ERROR: --tx-cost and --tx-profile are mutually exclusive. Either set the costs explicitly or choose a profile in lotus-cli-config.yaml, exiting");
         }
 
         // Determine transaction cost

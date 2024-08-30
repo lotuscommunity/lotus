@@ -1,8 +1,8 @@
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_smoke_tests::lotus_smoke::lotusSmoke;
 
 use diem_forge::Swarm;
-use libra_cached_packages::libra_stdlib;
-use libra_framework::release::ReleaseTarget;
+use lotus_cached_packages::lotus_stdlib;
+use lotus_framework::release::ReleaseTarget;
 use smoke_test::smoke_test_environment::new_local_swarm_with_release;
 
 /// testing that we can get a swarm up of 1 node with the current head.mrb
@@ -14,7 +14,7 @@ async fn meta_can_start_swarm() {
 
     let payload = public_info
         .transaction_factory()
-        .payload(libra_stdlib::diem_governance_smoke_trigger_epoch());
+        .payload(lotus_stdlib::diem_governance_smoke_trigger_epoch());
 
     let demo_txn = public_info
         .root_account()
@@ -29,17 +29,17 @@ async fn meta_can_start_swarm() {
 
 /// testing the LibraSmoke abstraction can load
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-async fn meta_create_libra_smoke_single() {
-    let _s = LibraSmoke::new(Some(1), None)
+async fn meta_create_lotus_smoke_single() {
+    let _s = LotusSmoke::new(Some(1), None)
         .await
-        .expect("cannot start libra swarm");
+        .expect("cannot start lotus swarm");
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 5)]
-async fn meta_create_libra_smoke_multi() -> anyhow::Result<()> {
-    let mut s = LibraSmoke::new(Some(5), None)
+async fn meta_create_lotus_smoke_multi() -> anyhow::Result<()> {
+    let mut s = LotusSmoke::new(Some(5), None)
         .await
-        .expect("cannot start libra swarm");
+        .expect("cannot start lotus swarm");
 
     let c = s.client();
     let res = c

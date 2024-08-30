@@ -4,8 +4,8 @@ use anyhow::bail;
 use diem_sdk::{
     rest_client::diem_api_types::TransactionOnChainData, types::account_address::AccountAddress,
 };
-use libra_cached_packages::libra_framework_sdk_builder::EntryFunctionCall::OlAccountTransfer;
-use libra_types::move_resource::gas_coin;
+use lotus_cached_packages::lotus_framework_sdk_builder::EntryFunctionCall::OlAccountTransfer;
+use lotus_types::move_resource::gas_coin;
 
 impl Sender {
     pub async fn transfer(

@@ -29,15 +29,15 @@ jobs:
 
       - name: install diem (for move tests)
         run: >
-          wget -O ${{github.workspace}}/diem https://github.com/0LNetworkCommunity/diem/releases/latest/download/diem &&
+          wget -O ${{github.workspace}}/diem https://github.com/lotuscommunity/diem/releases/latest/download/diem &&
           chmod +x ${{github.workspace}}/diem
 
       - uses: Swatinem/rust-cache@v2.7.3
         with:
-            shared-key: "libra-framework"
+            shared-key: "lotus-framework"
             cache-all-crates: true
 
       # Move framework tests
       - name: move framework
-        working-directory: ./framework/libra-framework
+        working-directory: ./framework/lotus-framework
         run: ${{github.workspace}}/diem move test

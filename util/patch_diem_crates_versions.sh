@@ -34,7 +34,7 @@ fi
 echo "Add the following lines to the end of Cargo.toml:"
 echo "-------------------------------------------------"
 
-echo "[patch.'https://github.com/0LNetworkCommunity/diem.git']"
-grep "https://github.com/0LNetworkCommunity/diem.git" Cargo.toml | \
-    grep -v '^\[patch' | sed s/0LNetworkCommunity/${github_org}/ | \
+echo "[patch.'https://github.com/lotuscommunity/diem.git']"
+grep "https://github.com/lotuscommunity/diem.git" Cargo.toml | \
+    grep -v '^\[patch' | sed s/lotuscommunity/${github_org}/ | \
     sed 's/branch = "release"/branch = "'${branch}'"/'

@@ -36,13 +36,13 @@ fs_extra = { workspace = true }
 futures-util = { workspace = true }
 
 hex = { workspace = true }
-libra-config = { workspace = true }
-libra-framework = { workspace = true }
-libra-query = { workspace = true }
-libra-smoke-tests = { workspace = true, features = ["testing"] }
-libra-txs = { workspace = true }
-libra-types = { workspace = true }
-libra-wallet = { workspace = true }
+lotus-config = { workspace = true }
+lotus-framework = { workspace = true }
+lotus-query = { workspace = true }
+lotus-smoke-tests = { workspace = true, features = ["testing"] }
+lotus-txs = { workspace = true }
+lotus-types = { workspace = true }
+lotus-wallet = { workspace = true }
 move-core-types = { workspace = true }
 move-vm-runtime = { workspace = true, features = ["testing"] }
 move-vm-types = { workspace = true }

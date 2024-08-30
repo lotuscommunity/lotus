@@ -17,7 +17,7 @@ use diem_sdk::{
         AccountKey, LocalAccount,
     },
 };
-use libra_types::{
+use lotus_types::{
     core_types::app_cfg::{AppCfg, TxCost},
     exports::{AuthenticationKey, Ed25519PrivateKey},
     ol_progress::OLProgress,
@@ -91,7 +91,7 @@ impl Sender {
         let key = match profile.borrow_private_key() {
             Ok(k) => k.to_owned(),
             _ => {
-                let leg_keys = libra_wallet::account_keys::get_keys_from_prompt()?;
+                let leg_keys = lotus_wallet::account_keys::get_keys_from_prompt()?;
                 leg_keys.child_0_owner.pri_key
             }
         };
@@ -150,7 +150,7 @@ impl Sender {
             let key = match pri_key {
                 Some(p) => p,
                 None => {
-                    let leg_keys = libra_wallet::account_keys::get_keys_from_prompt()?;
+                    let leg_keys = lotus_wallet::account_keys::get_keys_from_prompt()?;
                     leg_keys.child_0_owner.pri_key
                 }
             };

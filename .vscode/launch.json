@@ -146,7 +146,7 @@
           "build",
           "--release",
           "-p",
-          "libra-framework"
+          "lotus-framework"
         ],
       },
       "args": [
@@ -155,7 +155,7 @@
         "${workspaceFolder}/framework/releases/upgrade",
         // "-m", "${workspaceFolder}/framework/releases/head.mrb",
         "-f",
-        "${workspaceFolder}/framework/libra-framework",
+        "${workspaceFolder}/framework/lotus-framework",
       ],
       "cwd": "${workspaceFolder}"
     },
@@ -367,7 +367,7 @@
       },
       "args": [
         "-s",
-        "/home/libra/swarm_temp",
+        "/home/lotus/swarm_temp",
         "create-account",
         "-a",
         "/home/account.json",
@@ -384,7 +384,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/target/debug/txs",
       "args": [
-        "create-account -s ~/libra/swarm_temp -a ~/account.json"
+        "create-account -s ~/lotus/swarm_temp -a ~/account.json"
       ],
       "env": {
         "NODE_ENV": "test"

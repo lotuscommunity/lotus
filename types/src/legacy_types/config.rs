@@ -4,7 +4,7 @@ use anyhow::{bail, Error};
 use diem_config::config::NodeConfig;
 use diem_global_constants::{CONFIG_FILE, NODE_HOME};
 use diem_types::{
-    account_address::AccountAddress, chain_id::{NamedChain, MODE_0L},
+    account_address::AccountAddress, chain_id::{NamedChain, MODE_LOTUS},
     transaction::authenticator::AuthenticationKey, waypoint::Waypoint,
 };
 use dirs;
@@ -178,7 +178,7 @@ impl AppCfg {
         }
 
         // skip questionnaire if CI
-        if MODE_0L.is_test() {
+        if MODE_LOTUS.is_test() {
             default_config.save_file()?;
 
             return Ok(default_config);

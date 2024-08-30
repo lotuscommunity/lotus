@@ -15,7 +15,7 @@ use diem_types::{
         state_value::StateValue,
     },
 };
-use libra_types::legacy_types::legacy_recovery_v6;
+use lotus_types::legacy_types::legacy_recovery_v6;
 use serde_json::json;
 use std::{
     collections::HashMap,
@@ -25,7 +25,7 @@ use std::{
 use tokio::{fs::OpenOptions, io::AsyncRead};
 
 #[cfg(test)]
-use libra_types::legacy_types::legacy_recovery_v6::{get_legacy_recovery, AccountRole};
+use lotus_types::legacy_types::legacy_recovery_v6::{get_legacy_recovery, AccountRole};
 
 ////// SNAPSHOT FILE IO //////
 /// read snapshot manifest file into object
@@ -43,7 +43,7 @@ pub fn load_snapshot_manifest(path: &PathBuf) -> Result<StateSnapshotBackup, Err
 /// get the epoch manifest from file
 /// NOTE: this file may sometimes be gzipped. So if it's not parsing, that may
 /// be why.
-// https://github.com/0LNetworkCommunity/diem/blob/restore-hard-forks/storage/backup/backup-cli/src/backup_types/state_snapshot/backup.rs#L260
+// https://github.com/lotuscommunity/diem/blob/restore-hard-forks/storage/backup/backup-cli/src/backup_types/state_snapshot/backup.rs#L260
 pub fn load_epoch_manifest(p: &Path) -> Result<EpochEndingBackup> {
     let bytes = fs::read(p)?;
     Ok(serde_json::from_slice::<EpochEndingBackup>(&bytes)?)

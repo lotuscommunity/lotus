@@ -4,7 +4,7 @@ use crate::support::{deadline_secs, update_node_config_restart};
 use diem_config::config::InitialSafetyRulesConfig;
 use diem_forge::SwarmExt;
 use diem_types::transaction::Transaction;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
 use rescue::{diem_db_bootstrapper::BootstrapOpts, rescue_tx::RescueTxOpts};
 use smoke_test::test_utils::swarm_utils::insert_waypoint;
 
@@ -21,9 +21,9 @@ async fn test_twin() -> anyhow::Result<()> {
 
     // The diem-node should be compiled externally to avoid any potential conflicts with the current build
     //get the current path
-    let mut s = LibraSmoke::new(Some(num_nodes as u8), None)
+    let mut s = LotusSmoke::new(Some(num_nodes as u8), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env = &mut s.swarm;
     println!(
@@ -39,9 +39,9 @@ async fn test_twin() -> anyhow::Result<()> {
     }
 
     println!("1. start new swarm configs, and stop the network");
-    let _s: LibraSmoke = LibraSmoke::new(Some(1), None)
+    let _s: LotusSmoke = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let first_validator_address = env
         .validators()

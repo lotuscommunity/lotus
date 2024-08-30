@@ -4,7 +4,7 @@
 
 //# run --script --signers Alice
 script {
-    use ol_framework::demo;
+    use lotus_framework::demo;
 
     fun main(sender: &signer) {
         let msg = std::string::utf8(b"abcd");

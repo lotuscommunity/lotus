@@ -5,7 +5,7 @@
 // slow wallets can use the normal payment and transfer mechanisms to move
 // the unlocked amount.
 
-module ol_framework::slow_wallet {
+module lotus_framework::slow_wallet {
   use std::error;
   use std::event;
   use std::vector;
@@ -13,25 +13,25 @@ module ol_framework::slow_wallet {
   use diem_framework::system_addresses;
   // use diem_framework::coin;
   use diem_framework::account;
-  use ol_framework::lotus_coin;
-  use ol_framework::testnet;
-  use ol_framework::sacred_cows;
+  use lotus_framework::lotus_coin;
+  use lotus_framework::testnet;
+  use lotus_framework::sacred_cows;
 
   // use diem_std::debug::print;
 
   friend diem_framework::genesis;
 
-  friend ol_framework::ol_account;
-  friend ol_framework::transaction_fee;
-  friend ol_framework::epoch_boundary;
+  friend lotus_framework::ol_account;
+  friend lotus_framework::transaction_fee;
+  friend lotus_framework::epoch_boundary;
   #[test_only]
-  friend ol_framework::test_slow_wallet;
+  friend lotus_framework::test_slow_wallet;
   #[test_only]
-  friend ol_framework::test_pof;
+  friend lotus_framework::test_pof;
   #[test_only]
-  friend ol_framework::mock;
+  friend lotus_framework::mock;
   #[test_only]
-  friend ol_framework::test_boundary;
+  friend lotus_framework::test_boundary;
 
 
   /// genesis failed to initialized the slow wallet registry
@@ -58,7 +58,7 @@ module ol_framework::slow_wallet {
 
     public(friend) fun initialize(framework: &signer){
       system_addresses::assert_ol(framework);
-      if (!exists<SlowWalletList>(@ol_framework)) {
+      if (!exists<SlowWalletList>(@lotus_framework)) {
         move_to<SlowWalletList>(framework, SlowWalletList {
           list: vector::empty<address>(),
           drip_events: account::new_event_handle<DripEvent>(framework)
@@ -75,12 +75,12 @@ module ol_framework::slow_wallet {
 
     /// implementation of setting slow wallet, allows contracts to call.
     fun set_slow(sig: &signer) acquires SlowWalletList {
-      assert!(exists<SlowWalletList>(@ol_framework), error::invalid_argument(EGENESIS_ERROR));
+      assert!(exists<SlowWalletList>(@lotus_framework), error::invalid_argument(EGENESIS_ERROR));
 
         let addr = signer::address_of(sig);
         let list = get_slow_list();
         if (!vector::contains<address>(&list, &addr)) {
-            let s = borrow_global_mut<SlowWalletList>(@ol_framework);
+            let s = borrow_global_mut<SlowWalletList>(@lotus_framework);
             vector::push_back(&mut s.list, addr);
         };
 
@@ -157,7 +157,7 @@ module ol_framework::slow_wallet {
     /// send a drip event notification with the totals of epoch
     fun emit_drip_event(root: &signer, value: u64, users: u64) acquires SlowWalletList {
         system_addresses::assert_ol(root);
-        let state = borrow_global_mut<SlowWalletList>(@ol_framework);
+        let state = borrow_global_mut<SlowWalletList>(@lotus_framework);
         event::emit_event(
           &mut state.drip_events,
           DripEvent {
@@ -253,8 +253,8 @@ module ol_framework::slow_wallet {
     #[view]
     // Getter for retrieving the list of slow wallets.
     public fun get_slow_list(): vector<address> acquires SlowWalletList{
-      if (exists<SlowWalletList>(@ol_framework)) {
-        let s = borrow_global<SlowWalletList>(@ol_framework);
+      if (exists<SlowWalletList>(@lotus_framework)) {
+        let s = borrow_global<SlowWalletList>(@lotus_framework);
         return *&s.list
       } else {
         return vector::empty<address>()
@@ -311,10 +311,10 @@ module ol_framework::slow_wallet {
       user: &signer,
     ) acquires SlowWalletList{
       system_addresses::assert_diem_framework(framework);
-      if (!exists<SlowWalletList>(@ol_framework)) {
+      if (!exists<SlowWalletList>(@lotus_framework)) {
         initialize(framework); //don't abort
       };
-      let state = borrow_global_mut<SlowWalletList>(@ol_framework);
+      let state = borrow_global_mut<SlowWalletList>(@lotus_framework);
       let addr = signer::address_of(user);
       if (!vector::contains(&state.list, &addr)) {
         vector::push_back(&mut state.list, addr);

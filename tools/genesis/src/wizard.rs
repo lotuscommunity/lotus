@@ -8,17 +8,17 @@ use crate::{genesis_builder, parse_json};
 use crate::genesis_registration;
 use diem_logger::warn;
 use diem_types::chain_id::NamedChain;
-use libra_types::ol_progress::OLProgress;
+use lotus_types::ol_progress::OLProgress;
 //////
-use crate::github_extensions::LibraGithubClient;
+use crate::github_extensions::LotusGithubClient;
 use anyhow::{bail, Context};
 use dialoguer::{Confirm, Input};
 use diem_config::config::IdentityBlob;
 use diem_github_client::Client;
 use indicatif::{ProgressBar, ProgressIterator};
-use libra_config::validator_config::validator_dialogue;
-use libra_types::{core_types::app_cfg::AppCfg, global_config_dir};
-use libra_wallet::keys::VALIDATOR_FILE;
+use lotus_config::validator_config::validator_dialogue;
+use lotus_types::{core_types::app_cfg::AppCfg, global_config_dir};
+use lotus_wallet::keys::VALIDATOR_FILE;
 use std::{
     env, fs,
     path::{Path, PathBuf},
@@ -411,7 +411,7 @@ impl GenesisWizard {
 #[ignore]
 async fn test_wizard() {
     let mut wizard = GenesisWizard::new(
-        "0LNetworkCommunity".to_string(),
+        "lotuscommunity".to_string(),
         "test_genesis".to_string(),
         None,
         NamedChain::TESTING,
@@ -423,7 +423,7 @@ async fn test_wizard() {
 #[ignore] // dev helper
 fn test_register() {
     let mut g = GenesisWizard::new(
-        "0LNetworkCommunity".to_string(),
+        "lotuscommunity".to_string(),
         "test_genesis".to_string(),
         None,
         NamedChain::TESTING,

@@ -3,12 +3,12 @@ mod support;
 use diem_state_view::account_with_state_view::AsAccountWithStateView;
 use diem_storage_interface::state_view::LatestDbStateCheckpointView;
 use diem_types::{account_view::AccountView, chain_id::NamedChain};
-use libra_framework::head_release_bundle;
-use libra_genesis_tools::{
+use lotus_framework::head_release_bundle;
+use lotus_genesis_tools::{
     compare, genesis::make_recovery_genesis_from_vec_legacy_recovery, genesis_reader, parse_json,
-    supply, vm::libra_genesis_default,
+    supply, vm::lotus_genesis_default,
 };
-use libra_types::{
+use lotus_types::{
     exports::{AccountAddress, ChainId},
     legacy_types::legacy_recovery_v6::LegacyRecoveryV6,
     move_resource::ancestry::AncestryResource,
@@ -33,7 +33,7 @@ fn test_correct_supply_arithmetic_single() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::mainnet(),
-        &libra_genesis_default(NamedChain::MAINNET),
+        &lotus_genesis_default(NamedChain::MAINNET),
     )
     .unwrap();
 
@@ -67,7 +67,7 @@ fn test_check_genesis_validators() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::test(),
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
     )
     .unwrap();
 
@@ -99,7 +99,7 @@ fn test_check_ancestry() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::test(),
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
     )
     .unwrap();
 
@@ -168,7 +168,7 @@ fn test_drop() {
         &genesis_vals,
         &head_release_bundle(),
         ChainId::test(),
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
     )
     .unwrap();
 

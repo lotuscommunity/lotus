@@ -1,5 +1,5 @@
 [package]
-name = "libra"
+name = "lotus"
 build = "build.rs"
 # Workspace inherited keys
 version = { workspace = true }
@@ -17,13 +17,13 @@ clap = { workspace = true }
 diem = { workspace = true }
 diem-config = { workspace = true }
 diem-node = { workspace = true }
-libra-config = { workspace = true }
-libra-framework = { workspace = true }
-libra-genesis-tools = { workspace = true }
-libra-query = { workspace = true }
-libra-txs = { workspace = true }
-libra-types = { workspace = true }
-libra-wallet = { workspace = true }
+lotus-config = { workspace = true }
+lotus-framework = { workspace = true }
+lotus-genesis-tools = { workspace = true }
+lotus-query = { workspace = true }
+lotus-txs = { workspace = true }
+lotus-types = { workspace = true }
+lotus-wallet = { workspace = true }
 tokio = { workspace = true }
 
 [build-dependencies]

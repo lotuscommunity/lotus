@@ -105,8 +105,8 @@ impl SlowWalletBalance {
     }
 
     // scale it to include decimals
-    pub fn scaled(&self) -> LibraBalanceDisplay {
-        LibraBalanceDisplay {
+    pub fn scaled(&self) -> LotusBalanceDisplay {
+        LotusBalanceDisplay {
             unlocked: cast_coin_to_decimal(self.unlocked),
             total: cast_coin_to_decimal(self.total),
         }
@@ -117,7 +117,7 @@ impl SlowWalletBalance {
 /// The slow wallet struct contains the coin value as it exists in the database which is without decimals. The decimal precision for GasCoin is 6. So we need to scale it for human consumption.
 #[derive(Debug, Serialize, Deserialize)]
 
-pub struct LibraBalanceDisplay {
+pub struct LotusBalanceDisplay {
     pub unlocked: f64,
     pub total: f64,
 }

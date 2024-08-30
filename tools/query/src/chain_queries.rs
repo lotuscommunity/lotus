@@ -3,7 +3,7 @@
 use crate::query_view::{self, get_view};
 use anyhow::Context;
 use diem_sdk::rest_client::{diem_api_types::ViewRequest, Client};
-use libra_types::type_extensions::client_ext::entry_function_id;
+use lotus_types::type_extensions::client_ext::entry_function_id;
 
 /// Retrieves the current epoch from the blockchain.
 pub async fn get_epoch(client: &Client) -> anyhow::Result<u64> {

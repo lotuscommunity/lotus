@@ -7,7 +7,7 @@ use diem_types::account_config::CORE_CODE_ADDRESS;
 use diem_vm::move_vm_ext::SessionExt;
 use diem_vm_genesis::exec_function;
 use indicatif::ProgressIterator;
-use libra_types::{
+use lotus_types::{
     exports::AccountAddress,
     legacy_types::legacy_recovery_v6::{AccountRole, LegacyRecoveryV6},
     ol_progress::OLProgress,

@@ -1,15 +1,15 @@
 use std::path::PathBuf;
 
 use diem_types::account_address::AccountAddress;
-use libra_smoke_tests::{configure_validator, libra_smoke::LibraSmoke};
-use libra_txs::{
+use lotus_smoke_tests::{configure_validator, lotus_smoke::LotusSmoke};
+use lotus_txs::{
     txs_cli::{
         TxsCli,
         TxsSub::{self, Transfer},
     },
     txs_cli_vals::ValidatorTxs,
 };
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_types::core_types::app_cfg::TxCost;
 
 // Scenario, a new user wants to become a validator.
 // 1. the account needs to be created, and funded
@@ -29,9 +29,9 @@ async fn smoke_onboard_validator() -> anyhow::Result<()> {
         "0x87515d94a244235a1433d7117bc0cb154c613c2f4b1e67ca8d98a542ee3f59f5",
     )?;
 
-    let mut s = LibraSmoke::new(None, None)
+    let mut s = LotusSmoke::new(None, None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -47,7 +47,7 @@ async fn smoke_onboard_validator() -> anyhow::Result<()> {
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -75,7 +75,7 @@ async fn smoke_onboard_validator() -> anyhow::Result<()> {
             "0x74f18da2b80b1820b58116197b1c41f8a36e1b37a15c7fb434bb42dd7bdaa66b".to_owned(),
         ),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),

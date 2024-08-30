@@ -34,13 +34,13 @@ use std::{
 use url::Url;
 
 pub const DEFAULT_TIMEOUT_SECS: u64 = 10;
-pub const USER_AGENT: &str = concat!("libra-config/", env!("CARGO_PKG_VERSION"));
+pub const USER_AGENT: &str = concat!("lotus-config/", env!("CARGO_PKG_VERSION"));
 
 #[async_trait]
 pub trait ClientExt {
     async fn default() -> anyhow::Result<Client>;
 
-    async fn from_libra_config(
+    async fn from_lotus_config(
         app_cfg: &AppCfg,
         chain_id_opt: Option<NamedChain>,
     ) -> anyhow::Result<(Client, ChainId)>;
@@ -85,12 +85,12 @@ impl ClientExt for Client {
     /// assumes the location of the config files, and gets a node from list in config
     async fn default() -> anyhow::Result<Client> {
         let app_cfg = AppCfg::load(None)?;
-        let (client, _) = Self::from_libra_config(&app_cfg, None).await?;
+        let (client, _) = Self::from_lotus_config(&app_cfg, None).await?;
         Ok(client)
     }
 
     /// Finds a good working upstream based on the list in a config file
-    async fn from_libra_config(
+    async fn from_lotus_config(
         app_cfg: &AppCfg,
         chain_id_opt: Option<NamedChain>,
     ) -> anyhow::Result<(Client, ChainId)> {

@@ -1,10 +1,10 @@
 
-module ol_framework::match_index {
+module lotus_framework::match_index {
   use diem_framework::account;
   use diem_framework::system_addresses;
-  use ol_framework::cumulative_deposits;
-  use ol_framework::lotus_coin::{Self, LotusCoin};
-  use ol_framework::ol_account;
+  use lotus_framework::cumulative_deposits;
+  use lotus_framework::lotus_coin::{Self, LotusCoin};
+  use lotus_framework::ol_account;
   use diem_framework::coin::{Self, Coin};
   use diem_framework::transaction_fee;
   use std::fixed_point32;
@@ -14,15 +14,15 @@ module ol_framework::match_index {
 
   friend diem_framework::genesis;
 
-  friend ol_framework::community_wallet_init;
-  friend ol_framework::epoch_boundary;
-  friend ol_framework::donor_voice_txs;
-  friend ol_framework::burn;
+  friend lotus_framework::community_wallet_init;
+  friend lotus_framework::epoch_boundary;
+  friend lotus_framework::donor_voice_txs;
+  friend lotus_framework::burn;
 
   /// matching index is not initialized
   const ENOT_INIT: u64 = 1;
 //
-  // friend ol_framework::community_wallet;
+  // friend lotus_framework::community_wallet;
   /// The Match index keeps accounts that have opted-in.
   struct MatchIndex has key {
     addr: vector<address>,
@@ -44,8 +44,8 @@ module ol_framework::match_index {
   // account can opt into match_index
   // checking for qualification should happen first in friend module
   public(friend) fun opt_into_match_index(sig: &signer) acquires MatchIndex {
-    assert!(exists<MatchIndex>(@ol_framework), error::invalid_state(ENOT_INIT));
-    let burn_state = borrow_global_mut<MatchIndex>(@ol_framework);
+    assert!(exists<MatchIndex>(@lotus_framework), error::invalid_state(ENOT_INIT));
+    let burn_state = borrow_global_mut<MatchIndex>(@lotus_framework);
     let addr = signer::address_of(sig);
     if (!vector::contains(&burn_state.addr, &addr)) {
       vector::push_back(&mut burn_state.addr, addr);
@@ -60,12 +60,12 @@ module ol_framework::match_index {
   public(friend) fun calc_ratios(vm: &signer, qualifying: vector<address>) acquires MatchIndex {
     system_addresses::assert_ol(vm);
     // don't abort
-    if (!exists<MatchIndex>(@ol_framework)) return;
+    if (!exists<MatchIndex>(@lotus_framework)) return;
     garbage_collection();
 
     // TODO! if it doesn't qualify don't let it bias the ratios
 
-    let burn_state = borrow_global_mut<MatchIndex>(@ol_framework);
+    let burn_state = borrow_global_mut<MatchIndex>(@lotus_framework);
 
     let len = vector::length(&qualifying);
     let i = 0;
@@ -113,7 +113,7 @@ module ol_framework::match_index {
     if (remainder_amount > 0) {
       let last_coin = lotus_coin::extract(coin, remainder_amount);
       // use pay_fee which doesn't track the sender, so we're not double counting the receipts, even though it's a small amount.
-      transaction_fee::vm_pay_fee(vm, @ol_framework, last_coin);
+      transaction_fee::vm_pay_fee(vm, @lotus_framework, last_coin);
     };
   }
 
@@ -157,25 +157,25 @@ module ol_framework::match_index {
   /// get the proportional share of each account qualified for Match, based on the recent-weighted donations. Returns a tuple of the table (list addresses, list of index of cumulative deposits, list fraction of total index)
   public fun get_ratios(): (vector<address>, vector<u64>, vector<fixed_point32::FixedPoint32>)
   acquires MatchIndex {
-    let d = borrow_global<MatchIndex>(@ol_framework);
+    let d = borrow_global<MatchIndex>(@lotus_framework);
     (*&d.addr, *&d.index, *&d.ratio)
   }
 
   #[view]
   /// address list of accounts opted into match_index
   public fun get_address_list(): vector<address> acquires MatchIndex {
-    if (!exists<MatchIndex>(@ol_framework))
+    if (!exists<MatchIndex>(@lotus_framework))
       return vector::empty<address>();
     garbage_collection();
-    *&borrow_global<MatchIndex>(@ol_framework).addr
+    *&borrow_global<MatchIndex>(@lotus_framework).addr
   }
 
   /// calculate the ratio which the matching wallet should receive per the recently weighted historical donations.
   fun get_payee_share(payee: address, total_vale_to_split: u64): u64 acquires MatchIndex {
-    if (!exists<MatchIndex>(@ol_framework))
+    if (!exists<MatchIndex>(@lotus_framework))
       return 0;
 
-    let d = borrow_global<MatchIndex>(@ol_framework);
+    let d = borrow_global<MatchIndex>(@lotus_framework);
     let _contains = vector::contains(&d.addr, &payee);
     let (is_found, i) = vector::index_of(&d.addr, &payee);
     if (is_found) {

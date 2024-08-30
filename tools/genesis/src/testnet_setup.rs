@@ -1,7 +1,7 @@
 use crate::{genesis_builder, parse_json};
 use diem_genesis::config::{HostAndPort, ValidatorConfiguration};
-use libra_config::validator_config;
-use libra_types::{core_types::fixtures::TestPersona, exports::NamedChain};
+use lotus_config::validator_config;
+use lotus_types::{core_types::fixtures::TestPersona, exports::NamedChain};
 use std::{fs, net::Ipv4Addr, path::PathBuf, thread, time};
 
 // Sets up the environment for the given test persona.

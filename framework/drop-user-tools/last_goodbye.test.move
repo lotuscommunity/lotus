@@ -1,14 +1,14 @@
 #[test_only]
-module ol_framework::test_last_goodbye {
+module lotus_framework::test_last_goodbye {
   use diem_framework::reconfiguration;
-  use ol_framework::mock;
-  use ol_framework::last_goodbye;
+  use lotus_framework::mock;
+  use lotus_framework::last_goodbye;
   use diem_framework::stake;
   use std::vector;
 
   // use diem_std::debug::print;
 
-  #[test(framework = @ol_framework, vm = @0x0, _alice = @0x1000a, bob = @0x1000b)]
+  #[test(framework = @lotus_framework, vm = @0x0, _alice = @0x1000a, bob = @0x1000b)]
   fun last_goodbye_meta(framework: &signer, vm: &signer, _alice: &signer, bob: &signer) {
     // Scenario: Testing that if an action expires voting cannot be done.
 
@@ -36,7 +36,7 @@ module ol_framework::test_last_goodbye {
   // account processing issues.
   #[test(vm = @0x0, framework = @ 0x1, alice = @0x1111a)]
   fun e2e_boundary_happy_drop_accounts(vm: signer, framework: signer, alice: signer) {
-    use ol_framework::last_goodbye;
+    use lotus_framework::last_goodbye;
 
     let _vals = common_test_setup(&framework);
 

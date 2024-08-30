@@ -7,7 +7,7 @@ use diem_global_constants::{DEFAULT_PUB_PORT, DEFAULT_VAL_PORT, DEFAULT_VFN_PORT
 use diem_types::{
     account_address::AccountAddress,
     network_address::NetworkAddress,
-    transaction::{SignedTransaction, TransactionPayload}, chain_id::MODE_0L,
+    transaction::{SignedTransaction, TransactionPayload}, chain_id::MODE_LOTUS,
 };
 
 use crate::pay_instruction::PayInstruction;
@@ -202,7 +202,7 @@ impl ValConfigs {
             .enumerate()
             .for_each(|(i, instr)| {
                 println!("{}", instr.text_instruction());
-                if !MODE_0L.is_test() {
+                if !MODE_LOTUS.is_test() {
                   match Confirm::new().with_prompt("").interact().unwrap() {
                     true => {},
                     _ =>  {

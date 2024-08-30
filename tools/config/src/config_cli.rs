@@ -5,13 +5,13 @@ use crate::{
 };
 use anyhow::{Context, Result};
 use clap::Parser;
-use libra_types::{
+use lotus_types::{
     core_types::app_cfg::{self, AppCfg},
     exports::{AccountAddress, AuthenticationKey, Client, NamedChain},
     global_config_dir, ol_progress,
     type_extensions::client_ext::ClientExt,
 };
-use libra_wallet::{utils::read_operator_file, validator_files::OPERATOR_FILE};
+use lotus_wallet::{utils::read_operator_file, validator_files::OPERATOR_FILE};
 use std::path::PathBuf;
 use url::Url;
 
@@ -236,7 +236,7 @@ impl ConfigCli {
                 }
 
                 println!(
-                    "\nNOTE: to check if this matches your mnemonic try `libra wallet whoami`"
+                    "\nNOTE: to check if this matches your mnemonic try `lotus wallet whoami`"
                 );
 
                 Ok(())

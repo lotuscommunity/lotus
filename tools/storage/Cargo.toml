@@ -21,6 +21,6 @@ diem-db-tool = { workspace = true }
 diem-logger = { workspace = true }
 diem-push-metrics = { workspace = true }
 diem-types = { workspace = true }
-libra-types = { workspace = true }
+lotus-types = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }

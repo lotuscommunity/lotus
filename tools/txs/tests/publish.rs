@@ -1,9 +1,9 @@
-use libra_smoke_tests::{configure_validator, libra_smoke::LibraSmoke};
-use libra_txs::txs_cli::{
+use lotus_smoke_tests::{configure_validator, lotus_smoke::LotusSmoke};
+use lotus_txs::txs_cli::{
     TxsCli,
     TxsSub::{GenerateTransaction, Publish},
 };
-use libra_types::{core_types::app_cfg::TxCost, type_extensions::client_ext::ClientExt};
+use lotus_types::{core_types::app_cfg::TxCost, type_extensions::client_ext::ClientExt};
 
 use diem::common::types::MovePackageDir;
 use std::{path::PathBuf, str::FromStr};
@@ -15,9 +15,9 @@ use std::{path::PathBuf, str::FromStr};
 async fn smoke_publish() {
     let d = diem_temppath::TempPath::new();
 
-    let mut s = LibraSmoke::new(Some(2), None)
+    let mut s = LotusSmoke::new(Some(2), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -37,7 +37,7 @@ async fn smoke_publish() {
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),

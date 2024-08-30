@@ -1,13 +1,13 @@
 mod support;
 
-use libra_smoke_tests::libra_smoke::LibraSmoke;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
 use rescue::{diem_db_bootstrapper::BootstrapOpts, rescue_tx::RescueTxOpts};
 
 #[tokio::test]
 async fn test_valid_genesis() -> anyhow::Result<()> {
-    let mut s = LibraSmoke::new(Some(3), None)
+    let mut s = LotusSmoke::new(Some(3), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env = &mut s.swarm;
 
@@ -79,9 +79,9 @@ async fn test_valid_genesis() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn test_can_build_gov_rescue_script() -> anyhow::Result<()> {
-    let mut s = LibraSmoke::new(Some(3), None)
+    let mut s = LotusSmoke::new(Some(3), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env = &mut s.swarm;
 
@@ -126,9 +126,9 @@ async fn test_can_build_gov_rescue_script() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn test_valid_waypoint() -> anyhow::Result<()> {
-    let mut s = LibraSmoke::new(Some(3), None)
+    let mut s = LotusSmoke::new(Some(3), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let env = &mut s.swarm;
 

@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use std::path::PathBuf;
 
 use diem_genesis::config::{HostAndPort, OperatorConfiguration, OwnerConfiguration};
-use libra_types::global_config_dir;
+use lotus_types::global_config_dir;
 
 use crate::{
     keys::PUBLIC_KEYS_FILE,

@@ -1,12 +1,12 @@
 mod support;
 
 use diem_crypto::ValidCryptoMaterialStringExt;
-use libra_query::query_view;
-use libra_txs::{
+use lotus_query::query_view;
+use lotus_txs::{
     txs_cli::{TxsCli, TxsSub, TxsSub::Transfer},
     txs_cli_community::{CageTx, ClaimTx, CommunityTxs, InitTx},
 };
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_types::core_types::app_cfg::TxCost;
 use rescue::twin::{Twin, TwinSetup};
 use std::{env, path::PathBuf};
 
@@ -16,12 +16,12 @@ async fn upgrade_multi_action_on_twin_db() -> Result<(), anyhow::Error> {
     // 1. create swarm with prod db copy
     let home_dir = env::var("HOME").expect("HOME environment variable not set");
     // TODO: Download the snapshot from github instead of using a local db copy
-    let prod_db_to_clone = PathBuf::from(format!("{}/.libra/data/db", home_dir));
+    let prod_db_to_clone = PathBuf::from(format!("{}/.lotus/data/db", home_dir));
     assert!(prod_db_to_clone.exists());
     let (mut swarm, dir) = Twin::apply_with_rando_e2e(prod_db_to_clone, 4)
         .await
         .unwrap();
-    let config_path = dir.path().to_owned().join("libra-cli-config.yaml");
+    let config_path = dir.path().to_owned().join("lotus-cli-config.yaml");
     let api_endpoint = swarm.api_endpoint.clone();
     let client = swarm.client();
 
@@ -76,7 +76,7 @@ async fn upgrade_multi_action_on_twin_db() -> Result<(), anyhow::Error> {
     let cw_authorities_addresses: Vec<_> = addresses.iter().take(3).cloned().collect();
 
     // 2. upgrade to the latest version with Offer structure
-    support::upgrade_multiple_impl("upgrade-multi-lib", vec!["3-libra-framework"], &mut swarm)
+    support::upgrade_multiple_impl("upgrade-multi-lib", vec!["3-lotus-framework"], &mut swarm)
         .await
         .unwrap();
 

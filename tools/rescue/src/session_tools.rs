@@ -9,7 +9,7 @@ use diem_storage_interface::{state_view::DbStateViewAtVersion, DbReaderWriter};
 use diem_types::{account_address::AccountAddress, transaction::ChangeSet};
 use diem_vm::move_vm_ext::{MoveVmExt, SessionExt, SessionId};
 use diem_vm_types::change_set::VMChangeSet;
-use libra_framework::head_release_bundle;
+use lotus_framework::head_release_bundle;
 use move_core_types::{
     ident_str,
     language_storage::{StructTag, CORE_CODE_ADDRESS},
@@ -32,7 +32,7 @@ pub struct ValCredentials {
 // NOTE: there are several implementations of this elsewhere in Diem
 // Some are buggy, some don't have exports or APIs needed (DiemDbBootstrapper). Some have issues with async and db locks (DiemDbDebugger).
 // so we had to rewrite it.
-pub fn libra_run_session<F>(
+pub fn lotus_run_session<F>(
     dir: PathBuf,
     f: F,
     debug_vals: Option<Vec<AccountAddress>>,
@@ -73,7 +73,7 @@ where
     if let Some(vals) = debug_vals {
         let vals_cast = MoveValue::vector_address(vals);
         let args = vec![&framework_sig, &vals_cast];
-        libra_execute_session_function(&mut session, "0x1::diem_governance::set_validators", args)?;
+        lotus_execute_session_function(&mut session, "0x1::diem_governance::set_validators", args)?;
     }
 
     // if we want accelerated epochs for twin, testnet, etc
@@ -81,13 +81,13 @@ where
         println!("setting epoch interval seconds");
         println!("{}, ms", ms);
         let secs_arg = MoveValue::U64(ms);
-        libra_execute_session_function(
+        lotus_execute_session_function(
             &mut session,
             "0x1::block::update_epoch_interval_microsecs",
             vec![&framework_sig, &secs_arg],
         )
         .expect("set epoch interval seconds");
-        libra_execute_session_function(&mut session, "0x1::reconfiguration::reconfigure", vec![])?;
+        lotus_execute_session_function(&mut session, "0x1::reconfiguration::reconfigure", vec![])?;
     }
 
     let change_set = session.finish(
@@ -104,11 +104,11 @@ where
 // these are the ceremonial dance steps
 // don't upset the gods
 pub fn writeset_voodoo_events(session: &mut SessionExt) -> anyhow::Result<()> {
-    libra_execute_session_function(session, "0x1::stake::on_new_epoch", vec![])?;
+    lotus_execute_session_function(session, "0x1::stake::on_new_epoch", vec![])?;
 
     let vm_signer = MoveValue::Signer(AccountAddress::ZERO);
 
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::block::emit_writeset_block_event",
         vec![
@@ -118,7 +118,7 @@ pub fn writeset_voodoo_events(session: &mut SessionExt) -> anyhow::Result<()> {
         ],
     )?;
 
-    libra_execute_session_function(session, "0x1::reconfiguration::reconfigure", vec![])?;
+    lotus_execute_session_function(session, "0x1::reconfiguration::reconfigure", vec![])?;
 
     Ok(())
 }
@@ -138,7 +138,7 @@ pub fn upgrade_framework(session: &mut SessionExt) -> anyhow::Result<()> {
 // wrapper to exectute a function
 // call anythign you want, except #[test] functions
 // note this ignores the `public` and `friend` visibility
-pub fn libra_execute_session_function(
+pub fn lotus_execute_session_function(
     session: &mut SessionExt,
     function_str: &str,
     args: Vec<&MoveValue>,
@@ -169,21 +169,21 @@ pub fn session_add_validators(
     upgrade_framework(session)?;
     // set the chain id (its is set to devnet by default)
     dbg!("set_chain_id");
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::chain_id::set_impl",
         vec![&MoveValue::Signer(AccountAddress::ONE), &MoveValue::U8(4)],
     )?;
     // clean the validator universe
     dbg!("clean_validator_universe");
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::validator_universe::clean_validator_universe",
         vec![&MoveValue::Signer(AccountAddress::ONE)],
     )?;
     // reset the validators
     dbg!("bulk_set_next_validators");
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::stake::bulk_set_next_validators",
         vec![
@@ -198,7 +198,7 @@ pub fn session_add_validators(
         let args = vec![&signer, &vector_val];
         //configure allowed validators(it should be deprecated??)
         dbg!("configure_allowed_validators");
-        libra_execute_session_function(session, "0x1::stake::configure_allowed_validators", args)?;
+        lotus_execute_session_function(session, "0x1::stake::configure_allowed_validators", args)?;
         let signer = MoveValue::Signer(cred.account);
         let consensus_pubkey = MoveValue::vector_u8(cred.consensus_pubkey.clone());
         let proof_of_possession = MoveValue::vector_u8(cred.proof_of_possession.clone());
@@ -216,20 +216,20 @@ pub fn session_add_validators(
         let amount = MoveValue::U64(amount);
         //create account
         dbg!("create account");
-        libra_execute_session_function(
+        lotus_execute_session_function(
             session,
             "0x1::ol_account::create_impl",
             vec![&MoveValue::Signer(AccountAddress::ONE), &signer],
         )?;
         //The accounts are not slow so we do not have to unlock them
         dbg!("mint to account");
-        libra_execute_session_function(
+        lotus_execute_session_function(
             session,
             "0x1::lotus_coin::mint_to_impl",
             vec![&MoveValue::Signer(AccountAddress::ONE), &signer, &amount],
         )?;
         dbg!("registering validator");
-        libra_execute_session_function(
+        lotus_execute_session_function(
             session,
             "0x1::validator_universe::register_validator",
             args,
@@ -239,23 +239,23 @@ pub fn session_add_validators(
     let signer = MoveValue::Signer(AccountAddress::ONE);
     //set the new validators
     dbg!("set_validators");
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::diem_governance::set_validators",
         vec![&signer, &validators],
     )?;
     // RECONFIGURE
     dbg!("on new epoch");
-    libra_execute_session_function(session, "0x1::stake::on_new_epoch", vec![])?;
+    lotus_execute_session_function(session, "0x1::stake::on_new_epoch", vec![])?;
     let vm_signer = MoveValue::Signer(AccountAddress::ZERO);
     dbg!("emit_writeset_block_event");
-    libra_execute_session_function(
+    lotus_execute_session_function(
         session,
         "0x1::block::emit_writeset_block_event",
         vec![&vm_signer, &MoveValue::Address(CORE_CODE_ADDRESS)],
     )?;
     dbg!("reconfigure");
-    libra_execute_session_function(session, "0x1::reconfiguration::reconfigure", vec![])?;
+    lotus_execute_session_function(session, "0x1::reconfiguration::reconfigure", vec![])?;
     Ok(())
 }
 
@@ -271,7 +271,7 @@ pub fn publish_current_framework(
     dir: &Path,
     debug_vals: Option<Vec<AccountAddress>>,
 ) -> anyhow::Result<ChangeSet> {
-    let vmc = libra_run_session(dir.to_path_buf(), combined_steps, debug_vals, None)?;
+    let vmc = lotus_run_session(dir.to_path_buf(), combined_steps, debug_vals, None)?;
     unpack_changeset(vmc)
 }
 
@@ -311,7 +311,7 @@ fn _update_resource_in_session(session: &mut SessionExt) {
 // the writeset voodoo needs to be perfect
 fn test_voodoo() {
     let dir = Path::new("/root/dbarchive/data_bak_2023-12-11/db");
-    libra_run_session(dir.to_path_buf(), writeset_voodoo_events, None, None).unwrap();
+    lotus_run_session(dir.to_path_buf(), writeset_voodoo_events, None, None).unwrap();
 }
 
 #[ignore]
@@ -319,13 +319,13 @@ fn test_voodoo() {
 // helper to see if an upgraded function is found in the DB
 fn test_base() {
     fn check_base(session: &mut SessionExt) -> anyhow::Result<()> {
-        libra_execute_session_function(session, "0x1::all_your_base::are_belong_to", vec![])?;
+        lotus_execute_session_function(session, "0x1::all_your_base::are_belong_to", vec![])?;
         Ok(())
     }
 
     let dir = Path::new("/root/dbarchive/data_bak_2023-12-11/db");
 
-    libra_run_session(dir.to_path_buf(), check_base, None, None).unwrap();
+    lotus_run_session(dir.to_path_buf(), check_base, None, None).unwrap();
 }
 
 #[ignore]

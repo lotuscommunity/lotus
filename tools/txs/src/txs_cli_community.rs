@@ -2,9 +2,9 @@
 
 use crate::submit_transaction::Sender;
 use diem_types::account_address::AccountAddress;
-use libra_cached_packages::libra_stdlib;
-use libra_query::{account_queries, query_view};
-use libra_types::move_resource::gas_coin;
+use lotus_cached_packages::lotus_stdlib;
+use lotus_query::{account_queries, query_view};
+use lotus_types::move_resource::gas_coin;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
@@ -110,7 +110,7 @@ impl CommunityTxs {
 
     // for tests only - TODO Remove when migration is finished
     async fn run_init_deprecated(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::multi_action_init_gov_deprecated();
+        let payload = lotus_stdlib::multi_action_init_gov_deprecated();
         sender.sign_submit_wait(payload).await?;
         Ok(())
     }
@@ -130,7 +130,7 @@ pub struct InitTx {
 
 impl InitTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::community_wallet_init_init_community(
+        let payload = lotus_stdlib::community_wallet_init_init_community(
             self.admins.clone(),
             self.num_signers,
         );
@@ -154,7 +154,7 @@ pub struct OfferTx {
 
 impl OfferTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::community_wallet_init_propose_offer(
+        let payload = lotus_stdlib::community_wallet_init_propose_offer(
             self.admins.clone(),
             self.num_signers,
         );
@@ -174,7 +174,7 @@ pub struct ClaimTx {
 
 impl ClaimTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::multi_action_claim_offer(self.community_wallet);
+        let payload = lotus_stdlib::multi_action_claim_offer(self.community_wallet);
         sender.sign_submit_wait(payload).await?;
         println!("You have claimed the community wallet offer.");
         Ok(())
@@ -191,7 +191,7 @@ pub struct CageTx {
 
 impl CageTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::community_wallet_init_finalize_and_cage(self.num_signers);
+        let payload = lotus_stdlib::community_wallet_init_finalize_and_cage(self.num_signers);
         sender.sign_submit_wait(payload).await?;
         println!("The community wallet is finalized and caged. It is now a multi-sig account.");
         Ok(())
@@ -222,7 +222,7 @@ impl AdminTx {
         // Default to adding a signer if the `drop` flag is not provided
         let is_add_operation = self.drop.unwrap_or(true);
 
-        let payload = libra_stdlib::community_wallet_init_change_signer_community_multisig(
+        let payload = lotus_stdlib::community_wallet_init_change_signer_community_multisig(
             self.community_wallet,
             self.admin,
             is_add_operation,
@@ -252,7 +252,7 @@ pub struct ProposeTx {
 
 impl ProposeTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::donor_voice_txs_propose_payment_tx(
+        let payload = lotus_stdlib::donor_voice_txs_propose_payment_tx(
             self.community_wallet,
             self.recipient,
             gas_coin::cast_decimal_to_coin(self.amount as f64),
@@ -467,7 +467,7 @@ async fn propose_single(
     multisig: &AccountAddress,
     instruction: &ProposePay,
 ) -> anyhow::Result<()> {
-    let payload = libra_stdlib::donor_voice_txs_propose_payment_tx(
+    let payload = lotus_stdlib::donor_voice_txs_propose_payment_tx(
         multisig.to_owned(),
         instruction.parsed.unwrap(),
         gas_coin::cast_decimal_to_coin(instruction.amount as f64),
@@ -490,7 +490,7 @@ pub struct VetoTx {
 impl VetoTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
         let payload =
-            libra_stdlib::donor_voice_txs_propose_veto_tx(self.community_wallet, self.proposal_id);
+            lotus_stdlib::donor_voice_txs_propose_veto_tx(self.community_wallet, self.proposal_id);
         sender.sign_submit_wait(payload).await?;
         Ok(())
     }
@@ -506,7 +506,7 @@ pub struct MigrateOfferTx {
 
 impl MigrateOfferTx {
     pub async fn run(&self, sender: &mut Sender) -> anyhow::Result<()> {
-        let payload = libra_stdlib::multi_action_migration_migrate_offer(self.community_wallet);
+        let payload = lotus_stdlib::multi_action_migration_migrate_offer(self.community_wallet);
         sender.sign_submit_wait(payload).await?;
         println!("You have migrated the account to have the Offer structure. You can proceed with the authority offer now.");
         Ok(())

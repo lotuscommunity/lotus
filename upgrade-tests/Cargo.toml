@@ -1,5 +1,5 @@
 [package]
-name = "libra-upgrade-tests"
+name = "lotus-upgrade-tests"
 version = { workspace = true }
 
 # Workspace inherited keys
@@ -17,10 +17,10 @@ bcs = { workspace = true }
 diem-forge = { workspace = true }
 diem-temppath = { workspace = true }
 diem-types = { workspace = true }
-libra-framework = { workspace = true }
-libra-query = { workspace = true }
-libra-smoke-tests = { workspace = true }
-libra-types = { workspace = true }
-libra-txs = { workspace = true }
+lotus-framework = { workspace = true }
+lotus-query = { workspace = true }
+lotus-smoke-tests = { workspace = true }
+lotus-types = { workspace = true }
+lotus-txs = { workspace = true }
 smoke-test = { workspace = true }
 tokio = { workspace = true }

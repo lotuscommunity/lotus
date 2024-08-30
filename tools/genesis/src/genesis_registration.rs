@@ -1,12 +1,12 @@
 use anyhow::Result;
 use diem_github_client::Client;
-use libra_wallet::{
+use lotus_wallet::{
     utils::to_yaml,
     validator_files::{SetValidatorConfiguration, OPERATOR_FILE, OWNER_FILE},
 };
 use std::path::PathBuf;
 
-// TODO: duplicate with libra-wallet and diem/crate/diem/src/genesis/keys
+// TODO: duplicate with lotus-wallet and diem/crate/diem/src/genesis/keys
 pub const PUBLIC_KEYS_FILE: &str = "public-keys.yaml";
 
 /// Function to publish the validator configuration files to github

@@ -9,7 +9,7 @@ SOURCE_PATH = $$HOME/lotus
 endif
 
 ifndef DATA_PATH
-DATA_PATH = $$HOME/.libra
+DATA_PATH = $$HOME/.lotus
 endif
 
 ifndef TARGET_SUPPLY
@@ -21,7 +21,7 @@ FUTURE_USES = 0.70
 endif
 
 ifndef RECOVERY_FILE
-RECOVERY_FILE = ${DATA_PATH}/libra-recovery/v5_recovery.json
+RECOVERY_FILE = ${DATA_PATH}/lotus-recovery/v5_recovery.json
 endif
 
 ifndef YEARS
@@ -33,7 +33,7 @@ CHAIN = mainnet
 endif
 
 ifndef GIT_ORG
-GIT_ORG = 0LNetworkCommunity
+GIT_ORG = lotuscommunity
 endif
 
 ifndef GIT_REPO
@@ -50,35 +50,35 @@ check:
 	@echo EPOCH: ${EPOCH}
 
 install:
-	cd ${SOURCE_PATH} && bash ./util/dev_setup.sh -bt && ${BINS_PATH}/cargo build --release -p libra -p libra-genesis-tools -p libra-framework
+	cd ${SOURCE_PATH} && bash ./util/dev_setup.sh -bt && ${BINS_PATH}/cargo build --release -p lotus -p lotus-genesis-tools -p lotus-framework
 # legacy source
 	mkdir -p ${DATA_PATH}
 	cd ${DATA_PATH} && git clone -b v6 https://github.com/0LNetworkCommunity/libra-legacy-v6
-	cp -f ${SOURCE_PATH}/target/release/libra* ${BINS_PATH}/
+	cp -f ${SOURCE_PATH}/target/release/lotus* ${BINS_PATH}/
 	@echo "Please run 'source ~/.bashrc' to update your environment."
 
 register:
-	libra-genesis-tools register --org-github ${GIT_ORG} --name-github ${GIT_REPO}
+	lotus-genesis-tools register --org-github ${GIT_ORG} --name-github ${GIT_REPO}
 # have cli tools use localhost
-	libra config fix --force-url http://localhost:8080
+	lotus config fix --force-url http://localhost:8080
 
 legacy: get-legacy recovery
 
 get-legacy:
 ### Fetch Ancestry Data, Snapshot, and Use v5.2 codebase and snapshot to generate recovery.json for seeding v6.9.x state
-	mkdir -p ${DATA_PATH}/libra-recovery | true
-	wget https://github.com/0LNetworkCommunity/epoch-archive/raw/main/${EPOCH}.tar.gz -O ${DATA_PATH}/libra-recovery/${EPOCH}.tar.gz
-	cd ${DATA_PATH}/libra-recovery && tar -xvzf ${EPOCH}.tar.gz
-	wget https://raw.githubusercontent.com/sirouk/ol-data-extraction/v-6.9.x-ready/assets/data.json -O ${DATA_PATH}/libra-recovery/v5_ancestry.json
+	mkdir -p ${DATA_PATH}/lotus-recovery | true
+	wget https://github.com/0LNetworkCommunity/epoch-archive/raw/main/${EPOCH}.tar.gz -O ${DATA_PATH}/lotus-recovery/${EPOCH}.tar.gz
+	cd ${DATA_PATH}/lotus-recovery && tar -xvzf ${EPOCH}.tar.gz
+	wget https://raw.githubusercontent.com/sirouk/ol-data-extraction/v-6.9.x-ready/assets/data.json -O ${DATA_PATH}/lotus-recovery/v5_ancestry.json
 
 recovery:
 	cd ${DATA_PATH}/libra-legacy-v6/ol/genesis-tools && \
-	cargo r -p ol-genesis-tools -- --export-json ${DATA_PATH}/libra-recovery/v5_recovery.json --snapshot-path ${DATA_PATH}/libra-recovery/${EPOCH}/state_ver* --ancestry-file ${DATA_PATH}/libra-recovery/v5_ancestry.json
+	cargo r -p ol-genesis-tools -- --export-json ${DATA_PATH}/lotus-recovery/v5_recovery.json --snapshot-path ${DATA_PATH}/lotus-recovery/${EPOCH}/state_ver* --ancestry-file ${DATA_PATH}/lotus-recovery/v5_ancestry.json
 
 	md5sum ${RECOVERY_FILE}
 
 genesis: stdlib
-	libra-genesis-tools \
+	lotus-genesis-tools \
 	-c ${CHAIN} \
 	genesis --org-github ${GIT_ORG} \
 	--name-github ${GIT_REPO} \
@@ -92,7 +92,7 @@ genesis: stdlib
 
 
 stdlib:
-	libra-framework release
+	lotus-framework release
 
 ############ TESTNET HELPERS ################
 
@@ -104,11 +104,11 @@ testnet-git-fetch:
 	git reset --hard && git pull -f
 
 testnet-stdlib:
-	cargo r -p libra-framework -- release
+	cargo r -p lotus-framework -- release
 
 testnet-node:
 # assumes you have done `install` above
-	libra node
+	lotus node
 
 ifndef ALICE_IP
 ALICE_IP = 134.209.32.159
@@ -123,7 +123,7 @@ CAROL_IP = 165.22.34.98
 endif
 
 testnet-genesis:
-	LIBRA_CI=1 cargo r -- \
+	LOTUS_CI=1 cargo r -- \
 	-c ${CHAIN} testnet \
 	-m ${PERSONA} \
 	-i ${ALICE_IP} \

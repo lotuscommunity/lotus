@@ -6,7 +6,7 @@ use crate::{
 use anyhow::Result;
 use diem_crypto::ed25519::{Ed25519PrivateKey, Ed25519PublicKey};
 use indoc::formatdoc;
-use libra_types::exports::{AccountAddress, AuthenticationKey};
+use lotus_types::exports::{AccountAddress, AuthenticationKey};
 use std::path::PathBuf;
 
 /// Generates keys from WalletLibrary, updates a MinerConfig

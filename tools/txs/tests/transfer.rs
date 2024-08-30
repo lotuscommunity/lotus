@@ -1,10 +1,10 @@
-use libra_smoke_tests::{configure_validator, helpers::get_libra_balance, libra_smoke::LibraSmoke};
-use libra_txs::{
+use lotus_smoke_tests::{configure_validator, helpers::get_lotus_balance, lotus_smoke::LotusSmoke};
+use lotus_txs::{
     submit_transaction::Sender,
     txs_cli::{to_legacy_address, TxsCli, TxsSub::Transfer},
 };
-use libra_types::core_types::app_cfg::TxCost;
-use libra_wallet::account_keys;
+use lotus_types::core_types::app_cfg::TxCost;
+use lotus_wallet::account_keys;
 
 // Testing that we can send the minimal transaction: a transfer from one existing validator to another.
 // Case 1: send to an existing account: another genesis validator
@@ -17,9 +17,9 @@ async fn smoke_transfer_existing_account() {
     let d = diem_temppath::TempPath::new();
 
     //std::env::set_var("DIEM_FORGE_NODE_BIN_PATH", "/root/.cargo/diem-node");
-    let mut s = LibraSmoke::new(Some(2), None) // going to transfer from validator #0 to validator #1
+    let mut s = LotusSmoke::new(Some(2), None) // going to transfer from validator #0 to validator #1
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -38,7 +38,7 @@ async fn smoke_transfer_existing_account() {
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -57,9 +57,9 @@ async fn smoke_transfer_create_account() -> Result<(), anyhow::Error> {
     let d = diem_temppath::TempPath::new();
 
     //std::env::set_var("DIEM_FORGE_NODE_BIN_PATH", "/root/.cargo/diem-node");
-    let mut s = LibraSmoke::new(None, None)
+    let mut s = LotusSmoke::new(None, None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -79,7 +79,7 @@ async fn smoke_transfer_create_account() -> Result<(), anyhow::Error> {
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_baseline_cost()),
@@ -91,7 +91,7 @@ async fn smoke_transfer_create_account() -> Result<(), anyhow::Error> {
         .await
         .expect("cli could not create and transfer to new account");
 
-    let bal = get_libra_balance(&client, marlon).await?;
+    let bal = get_lotus_balance(&client, marlon).await?;
     assert_eq!(
         bal.total, 1000000,
         "Balance of the new account should be 1.0(1000000) after the transfer"
@@ -105,9 +105,9 @@ async fn smoke_transfer_create_account() -> Result<(), anyhow::Error> {
 async fn smoke_transfer_estimate() {
     let d = diem_temppath::TempPath::new();
 
-    let mut s = LibraSmoke::new(None, None)
+    let mut s = LotusSmoke::new(None, None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -123,7 +123,7 @@ async fn smoke_transfer_estimate() {
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: None,
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_cheap_txs_cost()),
@@ -140,9 +140,9 @@ async fn smoke_transfer_estimate() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn send_v6_v5() -> anyhow::Result<()> {
     // create libra swarm and get app config for the first validator
-    let mut ls = LibraSmoke::new(Some(1), None)
+    let mut ls = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
     let val_app_cfg = ls.first_account_app_cfg()?;
 
     // get an appcfg struct from Alice's mnemonic
@@ -167,7 +167,7 @@ async fn send_v6_v5() -> anyhow::Result<()> {
 
     let client = ls.client();
 
-    let bal = get_libra_balance(&client, *alice_acct_v6).await?;
+    let bal = get_lotus_balance(&client, *alice_acct_v6).await?;
     assert_eq!(
         bal.total, 100000000,
         "Balance of the new account should be 100.0(100000000) after the transfer"
@@ -181,7 +181,7 @@ async fn send_v6_v5() -> anyhow::Result<()> {
         let res = s.transfer(alice_acc_v5, 200.0, false).await?.unwrap();
         assert!(res.info.status().is_success());
 
-        let bal = get_libra_balance(&client, alice_acc_v5).await?;
+        let bal = get_lotus_balance(&client, alice_acc_v5).await?;
         assert_eq!(
             bal.total, 200000000,
             "Balance of the new account should be 200.0(200000000) after the transfer"

@@ -7,14 +7,14 @@ use diem_types::{
     write_set::TransactionWrite,
 };
 use diem_vm_genesis::{TestValidator, Validator};
-use libra_genesis_tools::{
+use lotus_genesis_tools::{
     genesis::{make_recovery_genesis_from_vec_legacy_recovery, save_genesis},
     parse_json,
-    vm::libra_genesis_default,
+    vm::lotus_genesis_default,
 };
 use std::path::PathBuf;
 
-use libra_framework::head_release_bundle;
+use lotus_framework::head_release_bundle;
 
 use std::fs;
 
@@ -37,7 +37,7 @@ fn end_to_end_single() {
         &validators,
         &head_release_bundle(),
         ChainId::test(),
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
     )
     .expect("could not write genesis.blob");
 
@@ -86,7 +86,7 @@ fn end_to_end_all() {
         &validators,
         &head_release_bundle(),
         ChainId::test(),
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
     )
     .expect("could not write genesis.blob");
 

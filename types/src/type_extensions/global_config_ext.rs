@@ -1,4 +1,4 @@
-use crate::GLOBAL_CONFIG_DIRECTORY_0L;
+use crate::GLOBAL_CONFIG_DIRECTORY_LOTUS;
 use diem::{
     common::{
         types::{CliError, CliTypedResult, ConfigSearchMode},
@@ -40,7 +40,7 @@ impl GlobalConfigExt for GlobalConfig {
 /// Helper function to locate the global configuration directory.
 pub fn global_folder() -> CliTypedResult<PathBuf> {
     if let Some(dir) = dirs::home_dir() {
-        Ok(dir.join(GLOBAL_CONFIG_DIRECTORY_0L))
+        Ok(dir.join(GLOBAL_CONFIG_DIRECTORY_LOTUS))
     } else {
         Err(CliError::UnexpectedError(
             "Unable to retrieve home directory".to_string(),
@@ -54,16 +54,16 @@ pub fn find_workspace_config(
     mode: ConfigSearchMode,
 ) -> CliTypedResult<PathBuf> {
     match mode {
-        ConfigSearchMode::CurrentDir => Ok(starting_path.join(GLOBAL_CONFIG_DIRECTORY_0L)),
+        ConfigSearchMode::CurrentDir => Ok(starting_path.join(GLOBAL_CONFIG_DIRECTORY_LOTUS)),
         ConfigSearchMode::CurrentDirAndParents => {
             let mut current_path = starting_path.clone();
             loop {
-                current_path.push(GLOBAL_CONFIG_DIRECTORY_0L);
+                current_path.push(GLOBAL_CONFIG_DIRECTORY_LOTUS);
                 if current_path.is_dir() {
                     break Ok(current_path);
                 } else if !(current_path.pop() && current_path.pop()) {
                     // If we aren't able to find the folder, we'll create a new one right here
-                    break Ok(starting_path.join(GLOBAL_CONFIG_DIRECTORY_0L));
+                    break Ok(starting_path.join(GLOBAL_CONFIG_DIRECTORY_LOTUS));
                 }
             }
         }

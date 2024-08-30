@@ -7,7 +7,7 @@ use diem_forge::{NodeExt, SwarmExt};
 use diem_temppath::TempPath;
 use diem_types::transaction::Transaction;
 use futures_util::future::try_join_all;
-use libra_smoke_tests::{helpers::get_libra_balance, libra_smoke::LibraSmoke};
+use lotus_smoke_tests::{helpers::get_lotus_balance, lotus_smoke::LotusSmoke};
 use rescue::{diem_db_bootstrapper::BootstrapOpts, rescue_tx::RescueTxOpts};
 use smoke_test::test_utils::{swarm_utils::insert_waypoint, MAX_CATCH_UP_WAIT_SECS};
 use std::{fs, time::Duration};
@@ -21,9 +21,9 @@ use std::{fs, time::Duration};
 /// looks something like this `/tmp/.tmpM9dF7w/0/log`
 async fn test_can_restart() -> anyhow::Result<()> {
     let num_nodes: usize = 5;
-    let mut s = LibraSmoke::new(Some(num_nodes as u8), None)
+    let mut s = LotusSmoke::new(Some(num_nodes as u8), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
 
     // clone here to prevent borrow issues
     let client = s.client().clone();
@@ -170,9 +170,9 @@ async fn test_can_restart() -> anyhow::Result<()> {
     println!("10. verify transactions work");
     std::thread::sleep(Duration::from_secs(5));
     let second_val = env.validators().nth(1).unwrap().peer_id();
-    let old_bal = get_libra_balance(&client, second_val).await?;
+    let old_bal = get_lotus_balance(&client, second_val).await?;
     s.mint_and_unlock(second_val, 123456).await?;
-    let bal = get_libra_balance(&client, second_val).await?;
+    let bal = get_lotus_balance(&client, second_val).await?;
     assert!(bal.total > old_bal.total, "transaction did not post");
 
     Ok(())

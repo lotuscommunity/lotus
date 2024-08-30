@@ -2,7 +2,7 @@
 
 use crate::{
     builder::framework_generate_upgrade_proposal::{
-        init_move_dir_wrapper, libra_compile_script, make_framework_upgrade_artifacts, save_build,
+        init_move_dir_wrapper, lotus_compile_script, make_framework_upgrade_artifacts, save_build,
     },
     release::ReleaseTarget,
 };
@@ -12,7 +12,7 @@ use clap::Parser;
 use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
-#[clap(name = "libra-framework", author, version, propagate_version = true)]
+#[clap(name = "lotus-framework", author, version, propagate_version = true)]
 /// Libra framework compiler.
 pub enum FrameworkCli {
     /// Creates a .mrb move framework release
@@ -66,7 +66,7 @@ pub struct FrameworkUpgrade {
     #[clap(short, long)]
     pub framework_local_dir: PathBuf,
 
-    /// optional, list of core module directory names to compile. It will default to this order: move-stdlib, vendor-stdlib, libra-framework
+    /// optional, list of core module directory names to compile. It will default to this order: move-stdlib, vendor-stdlib, lotus-framework
     #[clap(long)]
     pub core_modules: Option<Vec<String>>,
 
@@ -137,7 +137,7 @@ impl GovernanceScript {
             return Ok(());
         }
 
-        let (bytes, hash) = libra_compile_script(&self.script_dir, false)?;
+        let (bytes, hash) = lotus_compile_script(&self.script_dir, false)?;
         save_build(self.script_dir.to_owned(), &bytes, &hash)?;
 
         Ok(())
@@ -163,7 +163,7 @@ pub fn make_template_files(
     let t = r#"
 script {
   // THIS IS A TEMPLATE GOVERNANCE SCRIPT
-  // you can generate this file with commandline tools: `libra-framework governance --output-dir --framework-local-dir`
+  // you can generate this file with commandline tools: `lotus-framework governance --output-dir --framework-local-dir`
   use diem_framework::diem_governance;
   use std::vector;
 

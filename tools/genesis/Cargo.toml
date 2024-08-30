@@ -1,5 +1,5 @@
 [package]
-name = "libra-genesis-tools"
+name = "lotus-genesis-tools"
 version = { workspace = true }
 
 # Workspace inherited keys
@@ -36,10 +36,10 @@ diem-types = { workspace = true }
 diem-vm = { workspace = true }
 diem-vm-genesis = { workspace = true }
 indicatif = { workspace = true }
-libra-config = { workspace = true }
-libra-framework = { workspace = true }
-libra-types = { workspace = true }
-libra-wallet = { workspace = true }
+lotus-config = { workspace = true }
+lotus-framework = { workspace = true }
+lotus-types = { workspace = true }
+lotus-wallet = { workspace = true }
 move-core-types = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

@@ -1,6 +1,6 @@
 //! Module for handling recovery genesis blob creation
 
-use libra_types::{
+use lotus_types::{
     exports::{AccountAddress, AuthenticationKey},
     legacy_types::legacy_recovery_v6::{self, AccountRole, LegacyRecoveryV6},
 };

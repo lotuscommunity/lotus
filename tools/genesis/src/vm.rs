@@ -28,12 +28,12 @@ use diem_vm_genesis::{
     initialize_on_chain_governance, publish_framework, set_genesis_end, validate_genesis_config,
     verify_genesis_write_set, GenesisConfiguration, Validator, GENESIS_KEYPAIR,
 };
-use libra_types::{legacy_types::legacy_recovery_v6::LegacyRecoveryV6, ol_progress::OLProgress};
+use lotus_types::{legacy_types::legacy_recovery_v6::LegacyRecoveryV6, ol_progress::OLProgress};
 
 /// set the genesis parameters
-/// NOTE: many of the parameters are ignored in libra_framework
+/// NOTE: many of the parameters are ignored in lotus_framework
 /// but are kept for api compatibility.
-pub fn libra_genesis_default(chain: NamedChain) -> GenesisConfiguration {
+pub fn lotus_genesis_default(chain: NamedChain) -> GenesisConfiguration {
     let epoch_duration_secs = match chain {
         NamedChain::MAINNET => 24 * 60 * 60, // one day
         NamedChain::TESTING => 2 * 60,       // for CI suite: two mins

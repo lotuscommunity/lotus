@@ -6,12 +6,12 @@ module diem_framework::validator_universe {
   use std::vector;
   use diem_framework::account;
   use diem_framework::system_addresses;
-  use ol_framework::jail;
-  use ol_framework::vouch;
+  use lotus_framework::jail;
+  use lotus_framework::vouch;
   use diem_framework::stake;
 
   #[test_only]
-  use ol_framework::testnet;
+  use lotus_framework::testnet;
   #[test_only]
   use diem_std::bls12381;
 

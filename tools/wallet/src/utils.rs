@@ -24,10 +24,10 @@ pub type CliTypedResult<T> = Result<T, anyhow::Error>;
 /// Checks if a file exists, being overridden by `PromptOptions`
 pub fn check_if_file_exists(file: &Path) -> CliTypedResult<()> {
     if file.exists() {
-        if let Some(env) = option_env!("LIBRA_CI") {
+        if let Some(env) = option_env!("LOTUS_CI") {
             if !env.is_empty() {
                 // TODO: how to make tests always overwrite?
-                println!("LIBRA_CI is set, overwriting {:?}", file.as_os_str());
+                println!("LOTUS_CI is set, overwriting {:?}", file.as_os_str());
                 return Ok(());
             }
         }

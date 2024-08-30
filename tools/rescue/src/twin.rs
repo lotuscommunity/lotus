@@ -12,13 +12,13 @@ use diem_types::{
 };
 use fs_extra::dir;
 use futures_util::TryFutureExt;
-use libra_config::make_profile;
-use libra_smoke_tests::{
+use lotus_config::make_profile;
+use lotus_smoke_tests::{
     configure_validator, helpers,
-    helpers::{get_libra_balance, mint_libra},
-    libra_smoke::LibraSmoke,
+    helpers::{get_lotus_balance, mint_lotus},
+    lotus_smoke::LotusSmoke,
 };
-use libra_txs::txs_cli_vals::ValidatorTxs;
+use lotus_txs::txs_cli_vals::ValidatorTxs;
 use move_core_types::account_address::AccountAddress;
 use smoke_test::test_utils::{
     swarm_utils::insert_waypoint, MAX_CATCH_UP_WAIT_SECS, MAX_CONNECTIVITY_WAIT_SECS,
@@ -31,13 +31,13 @@ use std::{
 };
 use tokio::process::Command;
 
-use libra_txs::txs_cli::{TxsCli, TxsSub::Transfer};
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_txs::txs_cli::{TxsCli, TxsSub::Transfer};
+use lotus_types::core_types::app_cfg::TxCost;
 
 use crate::{
     rescue_tx::RescueTxOpts,
     session_tools::{
-        self, libra_execute_session_function, libra_run_session, writeset_voodoo_events,
+        self, lotus_execute_session_function, lotus_run_session, writeset_voodoo_events,
         ValCredentials,
     },
 };
@@ -52,10 +52,10 @@ use diem_genesis::{
 use diem_types::{on_chain_config::new_epoch_event_key, waypoint::Waypoint};
 use diem_vm::move_vm_ext::SessionExt;
 use hex::{self, FromHex};
-use libra_config::validator_config;
-use libra_query::query_view;
-use libra_types::exports::{Client, NamedChain};
-use libra_wallet::{
+use lotus_config::validator_config;
+use lotus_query::query_view;
+use lotus_types::exports::{Client, NamedChain};
+use lotus_wallet::{
     core::legacy_scheme::LegacyKeyScheme, validator_files::SetValidatorConfiguration,
 };
 use move_core_types::value::MoveValue;
@@ -149,7 +149,7 @@ pub trait TwinSetup {
     async fn apply_with_rando_e2e(
         prod_db: PathBuf,
         num_validators: u8,
-    ) -> anyhow::Result<(LibraSmoke, TempPath), anyhow::Error>;
+    ) -> anyhow::Result<(LotusSmoke, TempPath), anyhow::Error>;
     async fn extract_credentials(marlon_node: &LocalNode) -> anyhow::Result<ValCredentials>;
     fn clone_db(prod_db: &Path, swarm_db: &Path) -> anyhow::Result<()>;
     async fn wait_for_node(
@@ -164,7 +164,7 @@ impl TwinSetup for Twin {
     async fn initialize_marlon_the_val() -> anyhow::Result<PathBuf> {
         // we use LibraSwarm to create a new folder with validator configs.
         // we then take the operator.yaml, and use it to register on a dirty db
-        let mut s = LibraSmoke::new(Some(1), None).await?;
+        let mut s = LotusSmoke::new(Some(1), None).await?;
         s.swarm.wait_all_alive(Duration::from_secs(10)).await?;
         let marlon = s.swarm.validators_mut().next().unwrap();
         marlon.stop();
@@ -195,7 +195,7 @@ impl TwinSetup for Twin {
     ) -> anyhow::Result<PathBuf> {
         println!("run session to create validator onboarding tx (rescue.blob)");
         let epoch_interval = 100000_u64;
-        let vmc = libra_run_session(
+        let vmc = lotus_run_session(
             db_path.to_path_buf(),
             |session| session_add_validators(session, creds),
             None,
@@ -232,7 +232,7 @@ impl TwinSetup for Twin {
     async fn apply_with_rando_e2e(
         prod_db: PathBuf,
         num_validators: u8,
-    ) -> anyhow::Result<(LibraSmoke, TempPath), anyhow::Error> {
+    ) -> anyhow::Result<(LotusSmoke, TempPath), anyhow::Error> {
         //The diem-node should be compiled externally to avoid any potential conflicts with the current build
         //get the current path
 
@@ -243,7 +243,7 @@ impl TwinSetup for Twin {
         let diem_node_path = current_path.join("tests/diem-proxy");
         // 1. Create a new validator set with new accounts
         println!("1. Create a new validator set with new accounts");
-        let mut smoke = LibraSmoke::new(Some(num_validators), Some(diem_node_path)).await?;
+        let mut smoke = LotusSmoke::new(Some(num_validators), Some(diem_node_path)).await?;
         //due to borrowing issues
         let client = smoke.client().clone();
         //Get the credentials of all the nodes
@@ -366,8 +366,8 @@ impl TwinSetup for Twin {
                 .expect("could not init validator config");
         let recipient = smoke.swarm.validators().nth(1).unwrap().peer_id();
         let marlon = smoke.swarm.validators().next().unwrap().peer_id();
-        let bal_old = get_libra_balance(&client, recipient).await?;
-        let config_path = d.path().to_owned().join("libra-cli-config.yaml");
+        let bal_old = get_lotus_balance(&client, recipient).await?;
+        let config_path = d.path().to_owned().join("lotus-cli-config.yaml");
         let cli = TxsCli {
             subcommand: Some(Transfer {
                 to_account: recipient,
@@ -386,7 +386,7 @@ impl TwinSetup for Twin {
         cli.run()
             .await
             .expect("cli could not send to existing account");
-        let bal_curr = get_libra_balance(&client, recipient).await?;
+        let bal_curr = get_lotus_balance(&client, recipient).await?;
         // 8. Check that the balance has changed
         assert!(bal_curr.total > bal_old.total, "balance should change");
 
@@ -510,7 +510,7 @@ impl TwinSetup for Twin {
 #[test]
 fn test_twin_cl() -> anyhow::Result<()> {
     //use any db
-    let prod_db_to_clone = PathBuf::from("/root/.libra/db");
+    let prod_db_to_clone = PathBuf::from("/root/.lotus/db");
     let twin = TwinOpts {
         db_dir: prod_db_to_clone,
         oper_file: None,
@@ -523,7 +523,7 @@ fn test_twin_cl() -> anyhow::Result<()> {
 #[tokio::test]
 async fn test_twin_random() -> anyhow::Result<()> {
     //use any db
-    let prod_db_to_clone = PathBuf::from("/root/.libra/db");
+    let prod_db_to_clone = PathBuf::from("/root/.lotus/db");
     Twin::apply_with_rando_e2e(prod_db_to_clone, 3)
         .await
         .unwrap();

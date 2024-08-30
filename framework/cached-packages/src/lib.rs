@@ -1,2 +1,2 @@
-pub mod libra_framework_sdk_builder;
-pub mod libra_stdlib;
+pub mod lotus_framework_sdk_builder;
+pub mod lotus_stdlib;

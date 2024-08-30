@@ -36,7 +36,7 @@ cd "$SCRIPT_PATH/.." || exit
 
 function usage {
   echo "Usage:"
-  echo "Installs or updates necessary dev tools for Libra."
+  echo "Installs or updates necessary dev tools for Lotus."
   echo "-b batch mode, no user interactions and minimal output"
   echo "-p update ${HOME}/.profile"
   echo "-r install protoc and related tools"
@@ -51,7 +51,7 @@ function usage {
   echo "-i installs an individual tool by name"
   echo "-n will target the /opt/ dir rather than the $HOME dir.  /opt/bin/, /opt/rustup/, and /opt/dotnet/ rather than $HOME/bin/, $HOME/.rustup/, and $HOME/.dotnet/"
   echo "If no toolchain component is selected with -t, -o, -y, -d, or -p, the behavior is as if -t had been provided."
-  echo "This command must be called from the root folder of the Libra project."
+  echo "This command must be called from the root folder of the Lotus project."
 }
 
 function add_to_profile {
@@ -886,7 +886,7 @@ if [[ "$INSTALL_BUILD_TOOLS" == "false" ]] && \
 fi
 
 if [ ! -f Cargo.toml ]; then
-	echo "Unknown location. Please run this from the Libra project root. Abort."
+	echo "Unknown location. Please run this from the Lotus project root. Abort."
 	exit 1
 fi
 

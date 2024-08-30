@@ -1,6 +1,6 @@
 mod support;
 
-use libra_framework::release::ReleaseTarget;
+use lotus_framework::release::ReleaseTarget;
 
 /// Testing that we can upgrade the chain framework using txs tools.
 /// NOTE: this aims to tests that the upgrade workflow works.
@@ -34,7 +34,7 @@ async fn workflow_upgrade_head_stdlib() {
 async fn workflow_upgrade_head_multiple_steps() {
     support::upgrade_multiple_impl(
         "upgrade-multi-lib",
-        vec!["1-move-stdlib", "2-vendor-stdlib", "3-libra-framework"],
+        vec!["1-move-stdlib", "2-vendor-stdlib", "3-lotus-framework"],
         ReleaseTarget::Head,
     )
     .await
@@ -47,7 +47,7 @@ async fn workflow_upgrade_head_multiple_steps() {
 async fn workflow_upgrade_head_multiple_steps_force() {
     support::upgrade_multiple_impl(
         "upgrade-multi-lib-force",
-        vec!["1-move-stdlib", "2-vendor-stdlib", "3-libra-framework"],
+        vec!["1-move-stdlib", "2-vendor-stdlib", "3-lotus-framework"],
         ReleaseTarget::Head,
     )
     .await

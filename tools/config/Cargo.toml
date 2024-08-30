@@ -1,5 +1,5 @@
 [package]
-name = "libra-config"
+name = "lotus-config"
 version = { workspace = true }
 
 # Workspace inherited keys
@@ -19,8 +19,8 @@ diem-crypto = { workspace = true }
 diem-genesis = { workspace = true }
 diem-rest-client = { workspace = true }
 diem-types = { workspace = true }
-libra-types = { workspace = true }
-libra-wallet = { workspace = true }
+lotus-types = { workspace = true }
+lotus-wallet = { workspace = true }
 reqwest = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

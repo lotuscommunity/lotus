@@ -17,7 +17,7 @@ use diem_rest_client::{
     Client,
 };
 use diem_types::account_address::AccountAddress;
-use libra_types::type_extensions::cli_config_ext::CliConfigExt;
+use lotus_types::type_extensions::cli_config_ext::CliConfigExt;
 use std::{collections::BTreeMap, env, str::FromStr};
 use url::Url;
 
@@ -103,7 +103,7 @@ pub async fn run(public_key: &str, profile: Option<&str>, workspace: bool) -> Re
     };
     let path = config.save_ext(config_location)?;
     eprintln!(
-        "\nThe libra configuration is saved! \nfor account {} \nat path: {}  as profile {}",
+        "\nThe lotus configuration is saved! \nfor account {} \nat path: {}  as profile {}",
         address,
         path.to_str().unwrap(),
         profile.unwrap_or(DEFAULT_PROFILE)

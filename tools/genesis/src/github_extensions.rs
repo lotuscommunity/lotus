@@ -3,7 +3,7 @@ use serde::Deserialize;
 use serde_json::json;
 
 /// Trait defining GitHub client functionalities for genesis repository operations.
-pub trait LibraGithubClient {
+pub trait LotusGithubClient {
     /// Creates a pull request for the genesis repository.
     fn make_genesis_pull_request(
         &self,
@@ -20,7 +20,7 @@ pub trait LibraGithubClient {
     fn get_authenticated_user(&self) -> Result<String, Error>;
 }
 
-impl LibraGithubClient for Client {
+impl LotusGithubClient for Client {
     /// Creates a pull request in the specified genesis repository.
     fn make_genesis_pull_request(
         &self,

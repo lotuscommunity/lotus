@@ -1,16 +1,16 @@
 // Scenario: We want to trigger a new epoch using the TriggerEpoch command
 // We will assume that triggering an epoch is an operation that we can test in a single node testnet
-use libra_query::query_view;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
-use libra_txs::{submit_transaction::Sender, txs_cli_governance::GovernanceTxs};
+use lotus_query::query_view;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
+use lotus_txs::{submit_transaction::Sender, txs_cli_governance::GovernanceTxs};
 /// Test triggering a new epoch
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 #[ignore] // TODO
 async fn trigger_epoch() -> anyhow::Result<()> {
     // create libra swarm and get app config for the validator
-    let mut ls = LibraSmoke::new(Some(1), None)
+    let mut ls = LotusSmoke::new(Some(1), None)
         .await
-        .expect("could not start libra smoke");
+        .expect("could not start lotus smoke");
     let val_app_cfg = ls.first_account_app_cfg()?;
 
     // create a Sender using the validator's app config

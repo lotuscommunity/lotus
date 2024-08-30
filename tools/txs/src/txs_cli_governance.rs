@@ -4,9 +4,9 @@ use crate::submit_transaction::Sender;
 use anyhow::{bail, Context};
 use diem_sdk::types::transaction::TransactionArgument;
 use diem_types::transaction::{Script, TransactionPayload};
-use libra_cached_packages::{
-    libra_stdlib,
-    libra_stdlib::{diem_governance_ol_create_proposal_v2, diem_governance_ol_vote},
+use lotus_cached_packages::{
+    lotus_stdlib,
+    lotus_stdlib::{diem_governance_ol_create_proposal_v2, diem_governance_ol_vote},
 };
 use std::{fs, path::PathBuf};
 
@@ -64,7 +64,7 @@ impl GovernanceTxs {
                 let hash = fs::read_to_string(&hash_path)?;
 
                 let num =
-                    libra_query::chain_queries::get_next_governance_proposal_id(sender.client())
+                    lotus_query::chain_queries::get_next_governance_proposal_id(sender.client())
                         .await?;
 
                 println!(
@@ -87,7 +87,7 @@ impl GovernanceTxs {
                 proposal_id,
                 proposal_script_dir,
             } => {
-                if libra_query::chain_queries::is_gov_proposal_resolved(
+                if lotus_query::chain_queries::is_gov_proposal_resolved(
                     sender.client(),
                     *proposal_id,
                 )
@@ -114,7 +114,7 @@ impl GovernanceTxs {
 
                 TransactionPayload::Script(proposal_script)
             }
-            GovernanceTxs::EpochBoundary => libra_stdlib::diem_governance_trigger_epoch(),
+            GovernanceTxs::EpochBoundary => lotus_stdlib::diem_governance_trigger_epoch(),
         };
 
         sender.sign_submit_wait(payload).await?;

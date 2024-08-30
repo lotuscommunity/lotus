@@ -19,7 +19,7 @@ fn generate_blob(writer: &CodeWriter, data: &[u8]) {
     emit!(writer, "]")
 }
 
-pub fn libra_author_script_file(
+pub fn lotus_author_script_file(
     //////// 0L //////// turn a compiled framework package into a script proposal
     release_package: &ReleasePackage,
     for_address: AccountAddress,

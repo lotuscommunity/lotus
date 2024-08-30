@@ -1,13 +1,13 @@
 use anyhow::Context;
 use diem_types::chain_id::NamedChain;
-use libra_framework::{release::ReleaseTarget, upgrade_fixtures};
-use libra_query::query_view;
-use libra_smoke_tests::{configure_validator, libra_smoke::LibraSmoke};
-use libra_txs::{
+use lotus_framework::{release::ReleaseTarget, upgrade_fixtures};
+use lotus_query::query_view;
+use lotus_smoke_tests::{configure_validator, lotus_smoke::LotusSmoke};
+use lotus_txs::{
     txs_cli::{TxsCli, TxsSub::Governance},
     txs_cli_governance::GovernanceTxs::{Propose, Resolve, Vote},
 };
-use libra_types::core_types::app_cfg::TxCost;
+use lotus_types::core_types::app_cfg::TxCost;
 
 /// If there are multiple modules being upgraded only one of the modules (the
 /// first) needs to be included in the proposal.
@@ -24,9 +24,9 @@ pub async fn upgrade_multiple_impl(
 
     let d = diem_temppath::TempPath::new();
 
-    let mut s = LibraSmoke::new_with_target(Some(1), None, prior_release)
+    let mut s = LotusSmoke::new_with_target(Some(1), None, prior_release)
         .await
-        .context("could not start libra smoke")?;
+        .context("could not start lotus smoke")?;
 
     let (_, _app_cfg) =
         configure_validator::init_val_config_files(&mut s.swarm, 0, d.path().to_owned())
@@ -61,7 +61,7 @@ pub async fn upgrade_multiple_impl(
         mnemonic: None,
         test_private_key: Some(s.encoded_pri_key.clone()),
         chain_id: Some(NamedChain::TESTING),
-        config_path: Some(d.path().to_owned().join("libra-cli-config.yaml")),
+        config_path: Some(d.path().to_owned().join("lotus-cli-config.yaml")),
         url: Some(s.api_endpoint.clone()),
         tx_profile: None,
         tx_cost: Some(TxCost::default_critical_txs_cost()),

@@ -3,7 +3,7 @@ use diem::{
     common::types::CliCommand,
     move_tool::{coverage, CompilePackage, ProvePackage, TestPackage},
 };
-use libra_framework::framework_cli::FrameworkCli;
+use lotus_framework::framework_cli::FrameworkCli;
 
 #[derive(Subcommand)]
 /// Move language tools for Libra core-devs

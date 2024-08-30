@@ -29,14 +29,14 @@ use diem_vm_genesis::{
     GenesisConfiguration as VmGenesisGenesisConfiguration, // in vendor codethere are two structs separately called the same name with nearly identical fields
 };
 use indicatif::ProgressBar;
-use libra_framework::release;
-use libra_types::{
+use lotus_framework::release;
+use lotus_types::{
     core_types::fixtures::TestPersona,
     exports::{ChainId, NamedChain},
     legacy_types::legacy_recovery_v6::LegacyRecoveryV6,
     ol_progress::OLProgress,
 };
-use libra_wallet::{
+use lotus_wallet::{
     account_keys::get_keys_from_mnem,
     keys::generate_key_objects_from_legacy,
     utils::{check_if_file_exists, from_yaml, write_to_user_only_file},
@@ -59,7 +59,7 @@ const GENESIS_FILE: &str = "genesis.blob";
 /// Minimal template for layout.yaml accounts in Genesis
 ///
 #[derive(Debug, Deserialize, Serialize)]
-struct LibraSimpleLayout {
+struct LotusSimpleLayout {
     /// List of usernames or identifiers
     pub users: Vec<String>,
 }
@@ -82,13 +82,13 @@ pub fn build(
     let genesis_file = output_dir.join(GENESIS_FILE);
     let waypoint_file = output_dir.join(WAYPOINT_FILE);
 
-    // NOTE: export env LIBRA_CI=1 to avoid y/n prompt
+    // NOTE: export env LOTUS_CI=1 to avoid y/n prompt
     if testnet_vals.is_none() {
         check_if_file_exists(genesis_file.as_path())?;
         check_if_file_exists(waypoint_file.as_path())?;
     }
 
-    let genesis_config = vm::libra_genesis_default(chain_name);
+    let genesis_config = vm::lotus_genesis_default(chain_name);
 
     let mut gen_info = if let Some(vals) = testnet_vals {
         let dummy_root = Ed25519PublicKey::from_encoded_string(
@@ -100,7 +100,7 @@ pub fn build(
             ChainId::new(chain_name.id()),
             dummy_root,
             vals,
-            libra_framework::head_release_bundle(),
+            lotus_framework::head_release_bundle(),
             &silly_config(&genesis_config),
         )?
     } else {
@@ -210,7 +210,7 @@ pub fn fetch_genesis_info(
 
     // let layout: Layout = client.get(Path::new(LAYOUT_FILE))?;
     let l_file = client.get_file(&Path::new(LAYOUT_FILE).display().to_string())?;
-    let layout: LibraSimpleLayout = from_yaml(&String::from_utf8(base64::decode(l_file)?)?)?;
+    let layout: LotusSimpleLayout = from_yaml(&String::from_utf8(base64::decode(l_file)?)?)?;
     OLProgress::complete("fetched layout file");
 
     let pb = OLProgress::spin_steady(500, "fetching validator registrations".to_string());
@@ -246,7 +246,7 @@ pub fn fetch_genesis_info(
 /// Retrieves validator configurations
 fn get_validator_configs(
     client: &Client,
-    layout: &LibraSimpleLayout,
+    layout: &LotusSimpleLayout,
     is_mainnet: bool,
 ) -> Result<Vec<ValidatorConfiguration>> {
     let mut validators = Vec::new();
@@ -545,8 +545,8 @@ fn parse_optional_option<F: Fn(&str) -> Result<T, E>, T, E: std::fmt::Display>(
 #[test]
 #[ignore] //dev helper
 fn test_github_info() {
-    use crate::vm::libra_genesis_default;
-    let gh_token_path = libra_types::global_config_dir().join("github_token.txt");
+    use crate::vm::lotus_genesis_default;
+    let gh_token_path = lotus_types::global_config_dir().join("github_token.txt");
     let token = std::fs::read_to_string(gh_token_path).unwrap();
 
     let _genesis_info = fetch_genesis_info(
@@ -554,7 +554,7 @@ fn test_github_info() {
         "a-genesis".to_string(),
         token,
         true,
-        &libra_genesis_default(NamedChain::TESTING),
+        &lotus_genesis_default(NamedChain::TESTING),
         &NamedChain::TESTING,
     )
     .unwrap();
@@ -563,7 +563,7 @@ fn test_github_info() {
 #[test]
 #[ignore] //dev helper
 fn test_build() {
-    let home = libra_types::global_config_dir();
+    let home = lotus_types::global_config_dir();
     let token = std::fs::read_to_string(home.join("github_token.txt")).unwrap();
 
     build(

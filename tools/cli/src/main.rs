@@ -3,16 +3,16 @@ mod node_cli;
 
 use anyhow::anyhow;
 use clap::{Parser, Subcommand};
-use libra_config::config_cli::ConfigCli;
-use libra_genesis_tools::cli::GenesisCli;
-use libra_query::query_cli::QueryCli;
-use libra_txs::txs_cli::TxsCli;
-use libra_wallet::wallet_cli::WalletCli;
+use lotus_config::config_cli::ConfigCli;
+use lotus_genesis_tools::cli::GenesisCli;
+use lotus_query::query_cli::QueryCli;
+use lotus_txs::txs_cli::TxsCli;
+use lotus_wallet::wallet_cli::WalletCli;
 
 #[derive(Parser)]
 #[clap(author, about, long_about = None)]
 #[clap(arg_required_else_help(true))]
-struct LibraCli {
+struct LotusCli {
     #[clap(subcommand)]
     command: Option<Sub>,
 }
@@ -31,7 +31,7 @@ enum Sub {
 }
 
 fn main() -> anyhow::Result<()> {
-    let cli = LibraCli::parse();
+    let cli = LotusCli::parse();
 
     match cli.command {
         // Execute Node CLI subcommand
@@ -90,7 +90,7 @@ fn main() -> anyhow::Result<()> {
 
                     // Display version information
                     Some(Sub::Version) => {
-                        println!("LIBRA VERSION {}", env!("CARGO_PKG_VERSION"));
+                        println!("LOTUS VERSION {}", env!("CARGO_PKG_VERSION"));
                         println!("Build Timestamp: {}", env!("VERGEN_BUILD_TIMESTAMP"));
                         println!("Git Branch: {}", env!("VERGEN_GIT_BRANCH"));
                         println!("Git SHA: {}", env!("VERGEN_GIT_SHA"));

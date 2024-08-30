@@ -1,7 +1,7 @@
 use crate::{
     account_queries::{
         community_wallet_scheduled_transactions, community_wallet_signers,
-        get_account_balance_libra, get_events, get_transactions, get_val_config,
+        get_account_balance_lotus, get_events, get_transactions, get_val_config,
         is_community_wallet_migrated,
     },
     chain_queries::{get_epoch, get_height},
@@ -12,7 +12,7 @@ use diem_api_types::Transaction;
 use diem_debugger::DiemDebugger;
 use diem_sdk::{rest_client::Client, types::account_address::AccountAddress};
 use indoc::indoc;
-use libra_types::{exports::AuthenticationKey, type_extensions::client_ext::ClientExt};
+use lotus_types::{exports::AuthenticationKey, type_extensions::client_ext::ClientExt};
 use serde_json::json;
 
 #[derive(Debug, clap::Subcommand)]
@@ -136,7 +136,7 @@ impl QueryType {
 
         match self {
             QueryType::Balance { account } => {
-                let res = get_account_balance_libra(&client, *account).await?;
+                let res = get_account_balance_lotus(&client, *account).await?;
                 Ok(json!(res.scaled()))
             }
             QueryType::View {

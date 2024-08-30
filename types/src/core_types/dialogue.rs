@@ -3,7 +3,7 @@ use anyhow::{bail, Error};
 use dialoguer::{Confirm, Input};
 use diem_crypto::HashValue;
 use diem_global_constants::NODE_HOME;
-use diem_types::chain_id::MODE_0L;
+use diem_types::chain_id::MODE_LOTUS;
 use glob::glob;
 use std::{fs, net::Ipv4Addr, path::PathBuf};
 
@@ -15,7 +15,7 @@ pub fn what_home(swarm_path: Option<PathBuf>, swarm_persona: Option<String>) -> 
     if let Some(path) = swarm_path {
         return swarm_home(path, swarm_persona);
     } else {
-        if MODE_0L.is_test() {
+        if MODE_LOTUS.is_test() {
             return dirs::home_dir().unwrap().join(NODE_HOME);
         }
     }
@@ -43,7 +43,7 @@ pub fn what_home(swarm_path: Option<PathBuf>, swarm_persona: Option<String>) -> 
 /// interact with user to get the source path
 pub fn what_source() -> Option<PathBuf> {
     let mut default_source_path = dirs::home_dir().unwrap();
-    default_source_path.push("libra");
+    default_source_path.push("lotus");
 
     let txt = &format!(
         "Is this the path to the source code? {:?}?",
@@ -75,7 +75,7 @@ pub fn what_ip() -> Result<Ipv4Addr, Error> {
             None => "127.0.0.1".parse().unwrap(),
         });
 
-    if MODE_0L.is_test() {
+    if MODE_LOTUS.is_test() {
         return Ok(system_ip);
     }
 
@@ -101,7 +101,7 @@ pub fn what_ip() -> Result<Ipv4Addr, Error> {
 
 /// interact with user to get ip address
 pub fn what_vfn_ip() -> Result<Ipv4Addr, Error> {
-    if MODE_0L.is_test() {
+    if MODE_LOTUS.is_test() {
         return Ok("0.0.0.0".parse::<Ipv4Addr>()?);
     }
 
@@ -122,7 +122,7 @@ pub fn what_vfn_ip() -> Result<Ipv4Addr, Error> {
 
 /// interact with user to get a statement
 pub fn what_statement() -> String {
-    if MODE_0L.is_test() {
+    if MODE_LOTUS.is_test() {
         return "test".to_owned();
     }
     Input::new()

@@ -1,11 +1,11 @@
-use libra_query::query_type::QueryType;
-use libra_smoke_tests::libra_smoke::LibraSmoke;
-use libra_types::move_resource::gas_coin::LibraBalanceDisplay;
+use lotus_query::query_type::QueryType;
+use lotus_smoke_tests::lotus_smoke::LotusSmoke;
+use lotus_types::move_resource::gas_coin::LotusBalanceDisplay;
 
 /// Testing the query library
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-async fn libra_query_test() {
-    let mut s = LibraSmoke::new(None, None)
+async fn lotus_query_test() {
+    let mut s = LotusSmoke::new(None, None)
         .await
         .expect("could not start swarm");
     let val_acct = s.first_account.address();
@@ -16,7 +16,7 @@ async fn libra_query_test() {
     match q.query_to_json(Some(c.to_owned())).await {
         Ok(v) => {
             println!("v: {:?}", v);
-            let b: LibraBalanceDisplay = serde_json::from_value(v).unwrap();
+            let b: LotusBalanceDisplay = serde_json::from_value(v).unwrap();
             assert_eq!(b.unlocked, 1000.0);
             assert_eq!(b.total, 1000.0);
         }
@@ -30,7 +30,7 @@ async fn libra_query_test() {
 /// test account struct annotation
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn account_annotate_test() {
-    let mut s = LibraSmoke::new(None, None)
+    let mut s = LotusSmoke::new(None, None)
         .await
         .expect("could not start swarm");
     let val_acct = s.first_account.address();

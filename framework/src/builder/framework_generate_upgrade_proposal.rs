@@ -1,7 +1,7 @@
 //! generate framework upgrade proposal scripts
 //! see vendor diem-move/framework/src/release_bundle.rs
 
-use crate::{builder::framework_release_bundle::libra_author_script_file, BYTECODE_VERSION};
+use crate::{builder::framework_release_bundle::lotus_author_script_file, BYTECODE_VERSION};
 use anyhow::{ensure, Context, Result};
 use diem_crypto::HashValue;
 use diem_framework::{BuildOptions, BuiltPackage, ReleasePackage};
@@ -20,7 +20,7 @@ fn default_core_modules() -> Vec<String> {
     vec![
         "move-stdlib".to_string(),
         "vendor-stdlib".to_string(),
-        "libra-framework".to_string(),
+        "lotus-framework".to_string(),
     ]
 }
 
@@ -90,7 +90,7 @@ pub fn make_framework_upgrade_artifacts(
             temp_gov_module.clone(),
             "upgrade_scripts",
             framework_local_dir
-                .join("libra-framework")
+                .join("lotus-framework")
                 .to_path_buf()
                 .clone(), // NOTE: this is the path for LibraFramework where all the governance *.move contracts exist.
         )?;
@@ -102,7 +102,7 @@ pub fn make_framework_upgrade_artifacts(
 
         // useing the bytes from the release code, we create the
         // governance transaction script. It's just a collection of vec<u8> arrays in move, which get reassembled by the code publisher on move side. It also contains authorization logic to allow the code to deploy.
-        libra_author_script_file(
+        lotus_author_script_file(
             &release,
             deploy_to_account,
             this_mod_gov_script_path.clone(),
@@ -114,7 +114,7 @@ pub fn make_framework_upgrade_artifacts(
         // This means we have another compilation step but for the .move script we just created in the step above.
         // we are interested in two outputs: the actual compiled binary, which the next step will save to `script.mv` in the module upgrade proposal dir.
         // and also the `hash` of the script bytes. We use this in different places, but mainly the proposer needs to know this hash so that in the proposal step of the governance ceremony, we can list this as an authrorized script for execution if the proposal passses the vote.
-        let (_, hash) = libra_compile_script(&temp_gov_module, false)?;
+        let (_, hash) = lotus_compile_script(&temp_gov_module, false)?;
 
         next_execution_hash = hash.to_vec();
 
@@ -147,7 +147,7 @@ pub fn write_to_file(result: Vec<(String, String)>, proposal_dir: PathBuf) -> an
 }
 /// Need to create a dummy package so that we can build the script into bytecode
 /// so that we can then get the hash of the script.
-/// ... so that we can then submit it as part of a proposal framework/libra-framework/sources/modified_source/diem_governance.move
+/// ... so that we can then submit it as part of a proposal framework/lotus-framework/sources/modified_source/diem_governance.move
 /// ... so that then the VM doesn't complain about its size /diem-move/diem-vm/src/diem_vm_impl.rs
 /// ... and so that when the proposal is approved a third party can execute the source upgrade.
 
@@ -160,13 +160,13 @@ pub fn init_move_dir_wrapper(
     diem::move_tool::init_move_dir_generic(
         &package_dir,
         script_name,
-        "LibraFramework".to_string(),
+        "LotusFramework".to_string(),
         std::fs::canonicalize(framework_local_dir)?,
     )?;
     Ok(())
 }
 
-pub fn libra_compile_script(
+pub fn lotus_compile_script(
     script_package_dir: &Path,
     _is_module: bool,
 ) -> Result<(Vec<u8>, HashValue)> {

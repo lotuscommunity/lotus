@@ -82,14 +82,14 @@ pub fn generate_fixtures(
     insert_test_file(&destination_module, false).context("could not insert test file")?;
 
     let this_crate = PathBuf::from_str(env!("CARGO_MANIFEST_DIR"))?;
-    let libra_framework_sources = this_crate
+    let lotus_framework_sources = this_crate
         .parent()
         .context("no parent dir")?
         .join("framework");
 
     make_framework_upgrade_artifacts(
         &output_path,
-        &libra_framework_sources,
+        &lotus_framework_sources,
         &Some(modules),
         force_incompatible_upgrade,
     )?;
@@ -121,17 +121,17 @@ pub fn upgrade_fixtures() -> anyhow::Result<()> {
     // places the all_your_base in the move-stdlib dir
     let p = fixture_path.join("upgrade-single-lib-force");
     std::fs::create_dir_all(&p)?;
-    let modules = vec!["libra-framework".to_string()];
+    let modules = vec!["lotus-framework".to_string()];
     generate_fixtures(p, modules, true)?;
 
     // for multi step upgrades
-    // places the all_your_base in the libra_framework dir
+    // places the all_your_base in the lotus_framework dir
     let p = fixture_path.join("upgrade-multi-lib");
     std::fs::create_dir_all(&p)?;
     let modules = vec![
         "move-stdlib".to_string(),
         "vendor-stdlib".to_string(),
-        "libra-framework".to_string(),
+        "lotus-framework".to_string(),
     ];
     generate_fixtures(p, modules, false)?;
 
@@ -141,7 +141,7 @@ pub fn upgrade_fixtures() -> anyhow::Result<()> {
     let modules = vec![
         "move-stdlib".to_string(),
         "vendor-stdlib".to_string(),
-        "libra-framework".to_string(),
+        "lotus-framework".to_string(),
     ];
     generate_fixtures(p, modules, true)?;
 

@@ -1,8 +1,8 @@
 use diem_forge::{LocalSwarm, Swarm};
 use diem_sdk::crypto::PrivateKey;
 use diem_sdk::types::LocalAccount;
-use libra_types::core_types::network_playlist::NetworkPlaylist;
-use libra_types::{core_types::app_cfg::AppCfg, exports::AuthenticationKey};
+use lotus_types::core_types::network_playlist::NetworkPlaylist;
+use lotus_types::{core_types::app_cfg::AppCfg, exports::AuthenticationKey};
 use std::path::PathBuf;
 use url::Url;
 

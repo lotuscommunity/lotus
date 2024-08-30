@@ -14,8 +14,8 @@ on:
       - "main**"
 env:
   DIEM_FORGE_NODE_BIN_PATH: ${{github.workspace}}/diem-node
-  LIBRA_CI: 1
-  MODE_0L: "TESTNET"
+  LOTUS_CI: 1
+  MODE_LOTUS: "TESTNET"
 
 jobs:
   clippy:
@@ -28,7 +28,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2.7.3
         with:
-          shared-key: "libra-framework"
+          shared-key: "lotus-framework"
           cache-all-crates: true
 
       - name: format
