@@ -1,4 +1,4 @@
-use lotus_smoke_tests::lotus_smoke::LotusSmoke;
+use lotus_smoke_tests::lotus_smoke::lotusSmoke;
 
 use diem_forge::Swarm;
 use lotus_cached_packages::lotus_stdlib;

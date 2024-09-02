@@ -1,7 +1,7 @@
 use diem_config::config::NodeConfig;
 use diem_forge::{LocalNode, Node, NodeExt, SwarmExt, Validator};
 use diem_logger::prelude::*;
-use lotus_smoke_tests::lotus_smoke::LotusSmoke;
+use lotus_smoke_tests::lotus_smoke::lotusSmoke;
 use smoke_test::test_utils::{
     MAX_CATCH_UP_WAIT_SECS, MAX_CONNECTIVITY_WAIT_SECS, MAX_HEALTHY_WAIT_SECS,
 };
