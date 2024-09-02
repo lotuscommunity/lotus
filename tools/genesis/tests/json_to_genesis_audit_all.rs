@@ -3,7 +3,6 @@ mod support;
 use diem_state_view::account_with_state_view::AsAccountWithStateView;
 use diem_storage_interface::state_view::LatestDbStateCheckpointView;
 use diem_types::{account_view::AccountView, chain_id::NamedChain};
-use diem_vm::data_cache::AsMoveResolver;
 use lotus_framework::head_release_bundle;
 use lotus_genesis_tools::{
     compare,
@@ -13,12 +12,11 @@ use lotus_genesis_tools::{
     supply::{self},
     vm::lotus_genesis_default,
 };
+use lotus_types::move_resource::lotus_coin::LotusCoinStoreResource;
 use lotus_types::{
     exports::ChainId, legacy_types::legacy_recovery_v6::AccountRole,
     move_resource::gas_coin::GasCoinStoreResource,
 };
-use lotus_types::move_resource::coin_info::GasCoinInfoResource;
-use lotus_types::move_resource::lotus_coin::LotusCoinStoreResource;
 use support::{path_utils::json_path, test_vals};
 
 #[test]
@@ -142,10 +140,7 @@ fn test_lotus_to_lotus_convert() {
     use lotus_types::exports::AccountAddress;
     let genesis_vals = test_vals::get_test_valset(4);
 
-    let path = json_path()
-        .parent()
-        .unwrap()
-        .join("single.json");
+    let path = json_path().parent().unwrap().join("single.json");
 
     let mut user_accounts = recovery_file_parse(path).unwrap();
 
@@ -159,9 +154,9 @@ fn test_lotus_to_lotus_convert() {
             .find(|e| {
                 e.account
                     == Some(
-                    AccountAddress::from_hex_literal("0x00000000000000000000000000000003")
-                        .unwrap(),
-                )
+                        AccountAddress::from_hex_literal("0x00000000000000000000000000000003")
+                            .unwrap(),
+                    )
             })
             .expect("should have this account")
             .clone()
@@ -179,7 +174,7 @@ fn test_lotus_to_lotus_convert() {
         ChainId::mainnet(),
         &lotus_genesis_default(NamedChain::MAINNET),
     )
-        .unwrap();
+    .unwrap();
 
     // NOTE: in the case of a single account being migrated, that account balance will equal the total supply as set in: SupplySettings. i.e. 10B
     let (db_rw, _) = genesis_reader::bootstrap_db_reader_from_gen_tx(&gen_tx).unwrap();
@@ -206,9 +201,9 @@ fn test_lotus_to_lotus_convert() {
             .find(|e| {
                 e.account
                     == Some(
-                    AccountAddress::from_hex_literal("0x45558bad546e6159020871f7e5d094d7")
-                        .unwrap(),
-                )
+                        AccountAddress::from_hex_literal("0x45558bad546e6159020871f7e5d094d7")
+                            .unwrap(),
+                    )
             })
             .expect("should have this account")
             .clone()
