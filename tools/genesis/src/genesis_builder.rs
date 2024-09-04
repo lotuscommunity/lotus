@@ -442,20 +442,21 @@ pub fn testnet_validator_config(
     keep_legacy_address: &bool,
 ) -> anyhow::Result<ValidatorConfiguration> {
     let mnem = persona.get_persona_mnem();
-    let key_chain = get_keys_from_mnem(mnem)?;
-    let (_, _, _, public_identity) = generate_key_objects_from_legacy(&key_chain)?;
+    let mut key_chain = get_keys_from_mnem(mnem)?;
 
-    let mut account_address = public_identity.account_address;
     if *keep_legacy_address {
-        account_address = get_ol_legacy_address(public_identity.account_address)?;
+        let account_address = get_ol_legacy_address(key_chain.child_0_owner.account)?;
+        key_chain.child_0_owner.account = account_address;
     }
 
+    let (_, _, _, public_identity) = generate_key_objects_from_legacy(&key_chain)?;
+
     Ok(ValidatorConfiguration {
-        owner_account_address: account_address.into(),
+        owner_account_address: public_identity.account_address.into(),
         owner_account_public_key: public_identity.account_public_key.clone(),
-        operator_account_address: account_address.into(),
+        operator_account_address: public_identity.account_address.into(),
         operator_account_public_key: public_identity.account_public_key.clone(),
-        voter_account_address: account_address.into(),
+        voter_account_address: public_identity.account_address.into(),
         voter_account_public_key: public_identity.account_public_key,
         consensus_public_key: public_identity.consensus_public_key,
         proof_of_possession: public_identity.consensus_proof_of_possession,
