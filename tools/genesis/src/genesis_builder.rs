@@ -48,6 +48,7 @@ use std::{
     str::FromStr,
     time::Duration,
 };
+use lotus_wallet::account_keys::get_ol_legacy_address;
 
 pub const LAYOUT_FILE: &str = "layout.yaml";
 pub const OPERATOR_FILE: &str = "operator.yaml";
@@ -438,17 +439,23 @@ fn get_config(client: &Client, user: &str, _is_mainnet: bool) -> Result<Validato
 pub fn testnet_validator_config(
     persona: &TestPersona,
     host: &HostAndPort,
+    keep_legacy_address: &bool,
 ) -> anyhow::Result<ValidatorConfiguration> {
     let mnem = persona.get_persona_mnem();
     let key_chain = get_keys_from_mnem(mnem)?;
     let (_, _, _, public_identity) = generate_key_objects_from_legacy(&key_chain)?;
 
+    let mut account_address = public_identity.account_address;
+    if *keep_legacy_address {
+        account_address = get_ol_legacy_address(public_identity.account_address)?;
+    }
+
     Ok(ValidatorConfiguration {
-        owner_account_address: public_identity.account_address.into(),
+        owner_account_address: account_address.into(),
         owner_account_public_key: public_identity.account_public_key.clone(),
-        operator_account_address: public_identity.account_address.into(),
+        operator_account_address: account_address.into(),
         operator_account_public_key: public_identity.account_public_key.clone(),
-        voter_account_address: public_identity.account_address.into(),
+        voter_account_address: account_address.into(),
         voter_account_public_key: public_identity.account_public_key,
         consensus_public_key: public_identity.consensus_public_key,
         proof_of_possession: public_identity.consensus_proof_of_possession,

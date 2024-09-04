@@ -57,7 +57,7 @@ pub async fn setup(
                 .parse()
                 .expect("could not parse IP address for host");
             let p = TestPersona::from(idx).ok()?;
-            genesis_builder::testnet_validator_config(&p, &host).ok()
+            genesis_builder::testnet_validator_config(&p, &host, keep_legacy_address).ok()
         })
         .collect();
 
