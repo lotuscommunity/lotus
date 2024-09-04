@@ -11,6 +11,7 @@ pub async fn setup(
     chain: NamedChain,
     data_path: PathBuf,
     legacy_data_path: Option<PathBuf>,
+    keep_legacy_address: &bool,
 ) -> anyhow::Result<()> {
     let db_path = data_path.join("data");
     if db_path.exists() {
@@ -40,7 +41,7 @@ pub async fn setup(
         Some(&me.to_string()),
         my_host,
         Some(me.get_persona_mnem()),
-        false,
+        *keep_legacy_address,
         Some(chain),
     )
     .await?;
