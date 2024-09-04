@@ -57,6 +57,14 @@ pub async fn setup(
                 .parse()
                 .expect("could not parse IP address for host");
             let p = TestPersona::from(idx).ok()?;
+
+            // Only keep legacy address for "me".
+            let keep_legacy_address = if p.idx() == me.idx() {
+                keep_legacy_address
+            } else {
+                &false
+            };
+
             genesis_builder::testnet_validator_config(&p, &host, keep_legacy_address).ok()
         })
         .collect();
