@@ -75,8 +75,15 @@ impl GenesisCli {
                 json_legacy,
                 keep_legacy_address,
             }) => {
-                testnet_setup::setup(me, ip_list, chain_name, data_path, json_legacy.to_owned(), keep_legacy_address)
-                    .await?
+                testnet_setup::setup(
+                    me,
+                    ip_list,
+                    chain_name,
+                    data_path,
+                    json_legacy.to_owned(),
+                    keep_legacy_address,
+                )
+                .await?
             }
             _ => {
                 println!("\nIf you're looking for trouble \nYou came to the right place");

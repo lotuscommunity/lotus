@@ -3,7 +3,6 @@ use diem_genesis::config::{HostAndPort, ValidatorConfiguration};
 use lotus_config::validator_config;
 use lotus_types::{core_types::fixtures::TestPersona, exports::NamedChain};
 use std::{fs, net::Ipv4Addr, path::PathBuf, thread, time};
-use std::fmt::Display;
 
 // Sets up the environment for the given test persona.
 pub async fn setup(
@@ -48,7 +47,8 @@ pub async fn setup(
         my_host,
         Some(me.get_persona_mnem()),
         keep_legacy_address
-            .as_ref().map_or(false, |addresses| addresses.contains(me)),
+            .as_ref()
+            .map_or(false, |addresses| addresses.contains(me)),
         Some(chain),
     )
     .await?;
@@ -66,7 +66,14 @@ pub async fn setup(
             let p = TestPersona::from(idx).ok()?;
 
             // Only keep legacy address for the keep_legacy addresses.
-            genesis_builder::testnet_validator_config(&p, &host, keep_legacy_address.as_ref().map_or(false, |addresses| addresses.contains(&p))).ok()
+            genesis_builder::testnet_validator_config(
+                &p,
+                &host,
+                keep_legacy_address
+                    .as_ref()
+                    .map_or(false, |addresses| addresses.contains(&p)),
+            )
+            .ok()
         })
         .collect();
 

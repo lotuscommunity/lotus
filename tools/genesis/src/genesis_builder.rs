@@ -36,6 +36,7 @@ use lotus_types::{
     legacy_types::legacy_recovery_v6::LegacyRecoveryV6,
     ol_progress::OLProgress,
 };
+use lotus_wallet::account_keys::get_ol_legacy_address;
 use lotus_wallet::{
     account_keys::get_keys_from_mnem,
     keys::generate_key_objects_from_legacy,
@@ -48,7 +49,6 @@ use std::{
     str::FromStr,
     time::Duration,
 };
-use lotus_wallet::account_keys::get_ol_legacy_address;
 
 pub const LAYOUT_FILE: &str = "layout.yaml";
 pub const OPERATOR_FILE: &str = "operator.yaml";
