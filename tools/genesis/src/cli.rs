@@ -137,6 +137,6 @@ enum Sub {
         json_legacy: Option<PathBuf>,
         /// keep the legacy address
         #[clap(short, long)]
-        keep_legacy_address: bool,
+        keep_legacy_address: Option<Vec<TestPersona>>,
     },
 }

@@ -439,12 +439,12 @@ fn get_config(client: &Client, user: &str, _is_mainnet: bool) -> Result<Validato
 pub fn testnet_validator_config(
     persona: &TestPersona,
     host: &HostAndPort,
-    keep_legacy_address: &bool,
+    keep_legacy_addr: bool,
 ) -> anyhow::Result<ValidatorConfiguration> {
     let mnem = persona.get_persona_mnem();
     let mut key_chain = get_keys_from_mnem(mnem)?;
 
-    if *keep_legacy_address {
+    if keep_legacy_addr {
         let account_address = get_ol_legacy_address(key_chain.child_0_owner.account)?;
         key_chain.child_0_owner.account = account_address;
     }
