@@ -73,9 +73,17 @@ impl GenesisCli {
                 me,
                 ip_list,
                 json_legacy,
+                keep_legacy_address,
             }) => {
-                testnet_setup::setup(me, ip_list, chain_name, data_path, json_legacy.to_owned())
-                    .await?
+                testnet_setup::setup(
+                    me,
+                    ip_list,
+                    chain_name,
+                    data_path,
+                    json_legacy.to_owned(),
+                    keep_legacy_address,
+                )
+                .await?
             }
             _ => {
                 println!("\nIf you're looking for trouble \nYou came to the right place");
@@ -134,5 +142,8 @@ enum Sub {
         /// path to file for legacy migration file
         #[clap(short, long)]
         json_legacy: Option<PathBuf>,
+        /// keep the legacy address
+        #[clap(short, long)]
+        keep_legacy_address: Option<Vec<TestPersona>>,
     },
 }

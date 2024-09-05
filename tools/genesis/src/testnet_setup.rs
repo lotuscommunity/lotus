@@ -11,6 +11,7 @@ pub async fn setup(
     chain: NamedChain,
     data_path: PathBuf,
     legacy_data_path: Option<PathBuf>,
+    keep_legacy_address: &Option<Vec<TestPersona>>,
 ) -> anyhow::Result<()> {
     let db_path = data_path.join("data");
     if db_path.exists() {
@@ -34,13 +35,20 @@ pub async fn setup(
         .parse()
         .expect("could not parse IP address for host");
 
+    // let mut keep_legacy_addr = false;
+    // if let Some(keep_legacy_addresses) = keep_legacy_address {
+    //     keep_legacy_addr = keep_legacy_addresses.contains(me);
+    // }
+
     // Initializes the validator configuration.
     validator_config::initialize_validator(
         Some(data_path.clone()),
         Some(&me.to_string()),
         my_host,
         Some(me.get_persona_mnem()),
-        false,
+        keep_legacy_address
+            .as_ref()
+            .map_or(false, |addresses| addresses.contains(me)),
         Some(chain),
     )
     .await?;
@@ -56,7 +64,16 @@ pub async fn setup(
                 .parse()
                 .expect("could not parse IP address for host");
             let p = TestPersona::from(idx).ok()?;
-            genesis_builder::testnet_validator_config(&p, &host).ok()
+
+            // Only keep legacy address for the keep_legacy addresses.
+            genesis_builder::testnet_validator_config(
+                &p,
+                &host,
+                keep_legacy_address
+                    .as_ref()
+                    .map_or(false, |addresses| addresses.contains(&p)),
+            )
+            .ok()
         })
         .collect();
 

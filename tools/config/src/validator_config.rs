@@ -19,11 +19,11 @@ pub async fn initialize_validator(
     username: Option<&str>,
     host: HostAndPort,
     mnem: Option<String>,
-    keep_legacy_address: bool,
+    keep_legacy_addr: bool,
     chain_name: Option<NamedChain>,
 ) -> anyhow::Result<PublicIdentity> {
     let (.., pub_id, keys) =
-        lotus_wallet::keys::refresh_validator_files(mnem, home_path.clone(), keep_legacy_address)?;
+        lotus_wallet::keys::refresh_validator_files(mnem, home_path.clone(), keep_legacy_addr)?;
     OLProgress::complete("initialized validator key files");
 
     // TODO: set validator fullnode configs. Not NONE

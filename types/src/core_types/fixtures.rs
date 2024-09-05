@@ -7,7 +7,7 @@ use std::{fs, path::PathBuf, str::FromStr};
 
 use anyhow::bail;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum TestPersona {
     Alice,
     Bob,
