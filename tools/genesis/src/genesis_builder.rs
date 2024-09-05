@@ -445,6 +445,7 @@ pub fn testnet_validator_config(
     let mut key_chain = get_keys_from_mnem(mnem)?;
 
     if keep_legacy_addr {
+
         let account_address = get_ol_legacy_address(key_chain.child_0_owner.account)?;
         key_chain.child_0_owner.account = account_address;
     }
